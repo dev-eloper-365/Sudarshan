@@ -1,0 +1,1374 @@
+
+
+==== public\index.html ====
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/1/1a/Emblem_of_India.svg" type="image/svg+xml"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <head>
+      <!-- Add the favicon link -->
+      <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/1/1a/favicon-16x16.png" type="image/svg+xml">
+    </head>
+    <title>Sudarshan</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
+
+
+==== public\manifest.json ====
+
+{
+  "short_name": "React App",
+  "name": "Create React App Sample",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
+
+
+==== public\robots.txt ====
+
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow:
+
+
+==== src\components\Footer.js ====
+
+// import React from 'react';
+// import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
+
+// function Footer() {
+//   return (
+//     <footer className="footer bg-primary text-white text-center py-3">
+//       <div className="container">
+//         <p className="mb-1">&copy; 2024 Sudarshan. All rights reserved.</p>
+//         <div>
+//           {/* <a href="#" className="text-white me-3"><FaFacebookF /></a>
+//           <a href="#" className="text-white me-3"><FaTwitter /></a>
+//           <a href="#" className="text-white"><FaLinkedinIn /></a> */}
+//         </div>
+//       </div>
+//     </footer>
+//   );
+// }
+
+// export default Footer;
+
+
+import React from 'react';
+import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
+
+function Footer() {
+  return (
+    <footer className="bg-gradient-to-r from-[#000046] to-[#1cb5e0] text-white text-center py-4 mt-10">
+      <div className="max-w-7xl mx-auto px-4">
+        <p className="mb-2 text-sm">&copy; 2024 Sudarshan. All rights reserved.</p>
+        <div className="flex justify-center space-x-4">
+          <a href="#" className="text-white text-xl hover:text-gray-300 transition-colors">
+            <FaFacebookF />
+          </a>
+          <a href="#" className="text-white text-xl hover:text-gray-300 transition-colors">
+            <FaTwitter />
+          </a>
+          <a href="#" className="text-white text-xl hover:text-gray-300 transition-colors">
+            <FaLinkedinIn />
+          </a>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+export default Footer;
+
+
+==== src\components\Navbar.js ====
+
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+
+const Navbar = () => {
+  const location = useLocation();
+  const path = location.pathname;
+
+  const getLinkClass = (linkPath) =>
+    `flex items-center justify-center h-full space-x-2 text-sm no-underline transition-all duration-300 ${
+      path === linkPath
+        ? 'border-b-2 border-white text-white' // Active state: white underline for current page
+        : 'text-white hover:border-b-2 hover:border-white' // Hover state: white underline on hover
+    }`;
+
+  return (
+    <div>
+      {/* Navbar below the logos */}
+      <nav
+        className="text-white shadow-lg h-16 py-4" // Increased height to h-16 and added padding for better alignment
+        style={{ background: 'linear-gradient(119.54deg, #1cb5e0 0%, #000046 100%)' }} // Reversed gradient
+      >
+        <div className="flex justify-between items-center w-full h-full">
+          {/* Left Aligned Logo */}
+          <Link
+            to="/"
+            className="text-2xl font-bold flex items-center space-x-2 no-underline pl-5" // Increased font size to 2xl and added left padding
+          >
+            <span className="text-white drop-shadow-lg">Sudarshan</span>
+          </Link>
+
+          {/* Right Aligned Links */}
+          <div className="ml-auto space-x-6 flex items-center h-full pr-5">
+            {/* Home */}
+            <Link to="/" className={getLinkClass('/')}>
+              <span>Home</span>
+            </Link>
+
+            {/* Generate */}
+            <Link to="/generate" className={getLinkClass('/generate')}>
+              <span>Generate</span>
+            </Link>
+
+            {/* Upload Document */}
+            <Link to="/upload" className={getLinkClass('/upload')}>
+              <span>Verify</span>
+            </Link>
+
+            {/* Profile */}
+            <Link to="/profile" className={getLinkClass('/profile')}>
+              <span>Profile</span>
+            </Link>
+          </div>
+        </div>
+      </nav>
+    </div>
+  );
+};
+
+export default Navbar;
+
+==== src\pages\UploadDocument.js ====
+
+import React, { useState } from 'react';
+import axios from 'axios';
+
+async function addBlock(blockData) {
+  try {
+    // Remove all spaces from aadhar_number
+    
+    console.log('Sending blockData:', blockData);
+    
+    // Make the POST request
+    const response = await axios.post(
+      'https://sudarshan-blockchain-prod.vercel.app/api/blockchain/verify-data',
+      blockData,
+      {
+        headers: {
+          'X-API-KEY': process.env.API_KEY,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    console.log('Block added successfully:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error adding block:', error.message);
+    return "Document is Invalid";
+  }
+}
+
+async function callFastApi(documentFile) {
+  const formData = new FormData();
+  formData.append('file', documentFile);
+
+  try {
+    // Make the POST request to your FastAPI server running on localhost
+    const response = await axios.post('http://127.0.0.1:8000/extract-details/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    // Handle the response
+    console.log('Extracted details:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error calling the FastAPI:', error.response ? error.response.data : error.message);
+    return null;
+  }
+}
+
+const UploadDocument = () => {
+  const [documentType, setDocumentType] = useState('');
+  const [documentFile, setDocumentFile] = useState(null);
+  const [message, setMessage] = useState('');
+  const [result, setResult] = useState(null);
+  const [apiResponse, setApiResponse] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!documentFile) {
+      setMessage('Please select a file before submitting');
+      return;
+    }
+
+    try {
+      // Call the FastAPI to extract details from the document
+      const extractedData = await callFastApi(documentFile);
+      
+      if (!extractedData) {
+        setMessage('Error extracting data from the document');
+        return;
+      }
+
+      setResult(extractedData);
+      // console.log(extractedData['aadhaar_number']);
+      extractedData.aadhaar_number = extractedData.aadhaar_number.replace(/\s+/g, '');
+      const blockData = {
+        document_content: {
+          aadhar_number: extractedData.aadhaar_number
+        }
+      };
+
+      // Add the block and get the response
+      const apiResult = await addBlock(blockData);
+      setApiResponse(apiResult);
+    } catch (err) {
+      console.error('Error processing document:', err);
+      setMessage('Error processing document');
+    }
+  };
+
+  return (
+    <div className="relative bg-gray-50 min-h-screen py-12 px-6 overflow-hidden">
+      <div className="relative z-10 max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg opacity-90">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">Verify Document</h2>
+        {message && (
+          <p
+            className={`mb-4 p-3 rounded-md text-center ${
+              message.includes('Error')
+                ? 'bg-red-100 text-red-600'
+                : 'bg-green-100 text-green-600'
+            }`}
+          >
+            {message}
+          </p>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="documentType" className="block text-gray-700 text-sm font-semibold mb-2">
+              Document Type
+            </label>
+            <select
+              className="form-select block w-full mt-1 border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              id="documentType"
+              value={documentType}
+              onChange={(e) => setDocumentType(e.target.value)}
+              required
+            >
+              <option value="" disabled>Select Document Type</option>
+              <option>Aadhar Card</option>
+              <option>PAN Card</option>
+              <option>Driving License</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="documentFile" className="block text-gray-700 text-sm font-semibold mb-2">
+              Upload File
+            </label>
+            <input
+              type="file"
+              className="block text-gray-700 text-sm font-semibold mb-2"
+              id="documentFile"
+              onChange={(e) => setDocumentFile(e.target.files[0])}
+              required
+            />
+          </div>
+
+          <button type="submit" className="w-full bg-blue-500 text-white py-3 rounded-md shadow-none hover:bg-blue-600 transition-transform transform-gpu">
+            Submit
+          </button>
+        </form>
+
+        {result && (
+          <div className="mt-6">
+            <h3 className="text-xl font-semibold">Extracted Details</h3>
+            <p><strong>Name:</strong> {result.name}</p>
+            <p><strong>Aadhaar Number:</strong> {result.aadhaar_number}</p>
+            <p><strong>Date of Birth:</strong> {result.date_of_birth}</p>
+            <p><strong>Gender:</strong> {result.gender}</p>
+          </div>
+        )}
+
+        {apiResponse && (
+          <div className="mt-6">
+            <h3 className="text-xl font-semibold">Block Data</h3>
+            <pre className="bg-gray-100 p-4 rounded-md">{JSON.stringify(apiResponse, null, 2)}</pre>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default UploadDocument;
+
+
+==== src\context\AuthContext.js ====
+
+
+
+==== src\pages\Generate.js ====
+
+import React, { useState, useRef } from 'react';
+import { motion } from 'framer-motion';
+import axios from 'axios';
+
+async function addBlock(blockData) {
+  try {
+    const response = await axios.post('http://192.168.247.170:3000/api/blockchain/add-block', blockData);
+    console.log('Block added successfully:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error adding block:', error.message);
+    return null;
+  }
+}
+
+const Generate = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    dob: '',
+    gender: '',
+    aadhar: '',
+    photo: null
+  });
+  const [errors, setErrors] = useState({});
+  const [showVoterID, setShowVoterID] = useState(false); // Control visibility of canvas and button
+  const canvasRef = useRef(null);
+
+  const handleChange = (e) => {
+    const { name, value, type, files } = e.target;
+    if (type === 'file') {
+      setFormData({
+        ...formData,
+        [name]: files[0]
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      });
+    }
+  };
+
+  const validateForm = () => {
+    let valid = true;
+    let newErrors = {};
+
+    if (formData.aadhar) {
+      const aadharNumber = formData.aadhar.replace(/\s+/g, '');
+      if (aadharNumber.length < 12) {
+        newErrors.aadhar = 'Aadhar number must be exactly 12 digits.';
+        valid = false;
+      } else if (!/^\d{12}$/.test(aadharNumber)) {
+        newErrors.aadhar = 'Aadhar number must be numeric.';
+        valid = false;
+      }
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const generateVoterID = (aadhaar_no) => {
+    let hash = 0;
+    for (let i = 0; i < aadhaar_no.length; i++) {
+      hash = (hash << 5) - hash + aadhaar_no.charCodeAt(i);
+      hash = hash & hash;
+    }
+    return Math.abs(hash).toString().padStart(8, '0');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    const voterID = generateVoterID(formData.aadhar);
+
+    // Add block to blockchain
+    const blockData = {
+      document_content: voterID
+    };
+
+    await addBlock(blockData);
+
+    // Show the canvas and download button after submission
+    setShowVoterID(true);
+
+    // Ensure the canvas is ready before drawing
+    setTimeout(() => {
+      if (canvasRef.current) {
+        drawVoterIDCard(formData.name, formData.dob, formData.gender, voterID, formData.photo);
+      }
+    }, 100); // Slight delay to ensure canvas is rendered
+  };
+
+  const drawVoterIDCard = (name, dob, gender, voterID, photo) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const cornerRadius = 15;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.moveTo(cornerRadius, 0);
+    ctx.lineTo(canvas.width - cornerRadius, 0);
+    ctx.quadraticCurveTo(canvas.width, 0, canvas.width, cornerRadius);
+    ctx.lineTo(canvas.width, canvas.height - cornerRadius);
+    ctx.quadraticCurveTo(canvas.width, canvas.height, canvas.width - cornerRadius, canvas.height);
+    ctx.lineTo(cornerRadius, canvas.height);
+    ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - cornerRadius);
+    ctx.lineTo(0, cornerRadius);
+    ctx.quadraticCurveTo(0, 0, cornerRadius, 0);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = '#090909';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    if (photo) {
+      const img = new Image();
+      img.onload = () => {
+        const photoWidth = canvas.width * 0.35;
+        const photoHeight = canvas.height * 0.7;
+        ctx.drawImage(img, 20, 50, photoWidth, photoHeight);
+        drawText(name, dob, gender, voterID, photoWidth);
+      };
+      img.src = URL.createObjectURL(photo);
+    } else {
+      drawText(name, dob, gender, voterID, 0);
+    }
+
+    function drawText(name, dob, gender, voterID, photoWidth) {
+      const textX = photoWidth + 40;
+      ctx.fillStyle = '#000000';
+      ctx.font = 'bold 22px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('Voter ID Card', canvas.width / 2, 40);
+
+      ctx.font = '18px Arial';
+      ctx.textAlign = 'left';
+      const lineHeight = 35;
+      const startY = 80;
+
+      ctx.fillText(`Name: ${name}`, textX, startY);
+      ctx.fillText(`DOB: ${dob}`, textX, startY + lineHeight);
+      ctx.fillText(`Gender: ${gender}`, textX, startY + 2 * lineHeight);
+      ctx.fillText(`Voter ID: ${voterID}`, textX, startY + 3 * lineHeight);
+    }
+  };
+
+  const downloadImage = () => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const link = document.createElement('a');
+      link.download = 'voter_id.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+  };
+
+  // Get the current date to limit the max date to year 2006 for 18+ rule
+  const maxDate = new Date(2006, 11, 31).toISOString().split('T')[0];
+
+  return (
+    <div className="bg-gray-50 min-h-screen py-12 px-6">
+      <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md">
+        <motion.h2
+          className="text-3xl font-bold text-gray-800 mb-6"
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          Generate Document
+        </motion.h2>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="name" className="block text-gray-700 text-sm font-semibold mb-2">
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Enter your name"
+              className="block w-full mt-1 border-0 border-b-2 border-gray-300 bg-transparent text-gray-500 focus:ring-0 focus:border-blue-500 placeholder-opacity-50"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="dob" className="block text-gray-700 text-sm font-semibold mb-2">
+              Date of Birth
+            </label>
+            <input
+              type="date"
+              id="dob"
+              name="dob"
+              value={formData.dob}
+              onChange={handleChange}
+              max={maxDate} // Limit date to before 2007
+              placeholder="Date of Birth"
+              className="block w-full mt-1 border-0 border-b-2 border-gray-300 bg-transparent text-gray-500 focus:ring-0 focus:border-blue-500 placeholder-opacity-50"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="gender" className="block text-gray-700 text-sm font-semibold mb-2">
+              Gender
+            </label>
+            <select
+              id="gender"
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="block w-full mt-1 border-0 border-b-2 border-gray-300 bg-transparent text-gray-500 focus:ring-0 focus:border-blue-500 placeholder-opacity-50"
+              required
+            >
+              <option value="" disabled>Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="aadhar" className="block text-gray-700 text-sm font-semibold mb-2">
+              Aadhar Number
+            </label>
+            <input
+              type="text"
+              id="aadhar"
+              name="aadhar"
+              value={formData.aadhar}
+              onChange={handleChange}
+              placeholder="Enter your Aadhar number"
+              className={`block w-full mt-1 border-0 border-b-2 border-gray-300 bg-transparent text-gray-500 focus:ring-0 focus:border-blue-500 placeholder-opacity-50 ${errors.aadhar ? 'border-red-500' : ''}`}
+              maxLength="12"
+              required
+            />
+            {errors.aadhar && <p className="text-red-600 text-sm mt-1">{errors.aadhar}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="photo" className="block text-gray-700 text-sm font-semibold mb-2">
+              Upload Photo
+            </label>
+            <input
+              type="file"
+              id="photo"
+              name="photo"
+              accept="image/*"
+              onChange={handleChange}
+              className="block text-gray-700 text-sm font-semibold mb-2"
+            />
+          </div>
+
+          <motion.button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-3 rounded-md shadow-lg hover:bg-blue-600 transition-transform transform-gpu"
+            whileHover={{ scale: 1.05 }}
+          >
+            Generate
+          </motion.button>
+        </form>
+
+        {/* Show canvas and download button only if form is submitted */}
+        {showVoterID && (
+          <>
+            <canvas ref={canvasRef} width="400" height="250" className="mt-6"></canvas>
+            <button onClick={downloadImage} className="mt-4 w-full bg-green-500 text-white py-3 rounded-md shadow-lg hover:bg-green-600 transition-transform transform-gpu">
+              Download Voter ID
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Generate;
+
+
+==== src\pages\Home.js ====
+
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { FaUpload, FaCheckCircle, FaLock } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+
+const Home = () => {
+  const containerStyle = {
+    fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+  };
+
+  return (
+    <div className="bg-gray-100 min-h-screen" style={containerStyle}>
+      {/* Swiper Image Slider */}
+      <section className="my-0">
+        <div className="w-full">
+          <Swiper
+            modules={[Autoplay, Pagination, Navigation]}
+            spaceBetween={0}
+            centeredSlides={false}
+            autoplay={{
+              delay: 2500,
+              disableOnInteraction: false,
+            }}
+            pagination={{ clickable: true }}
+            navigation={true}
+            className="mySwiper full-width-swiper"
+          >
+            {/* Welcome Text Slide */}
+            <SwiperSlide>
+              <div className="flex flex-col items-center justify-center h-72 bg-gradient-to-r from-blue-500 to-green-500 text-white">
+                <motion.h1
+                  className="text-6xl font-bold"
+                  initial={{ opacity: 0, y: -50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  Welcome to Document Verification System
+                </motion.h1>
+                <p className="mt-4 text-lg">
+                  Upload and verify your documents with ease!
+                </p>
+                <Link to="/generate" style={{ textDecoration: 'none' }}>
+                  <motion.button
+                    className="mt-6 bg-white text-blue-500 px-6 py-3 rounded-full font-semibold hover:bg-yellow-400 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    Get Started
+                  </motion.button>
+                </Link>
+              </div>
+            </SwiperSlide>
+
+            {/* Image Slide 1 */}
+            <SwiperSlide>
+              <img
+                src="https://images.unsplash.com/photo-1707157281599-d155d1da5b4c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG9mZmljaWFsJTIwZG9jdW1lbnRzfGVufDB8fDB8fHww"
+                alt="Document Image 1"
+                className="w-full h-72 object-cover"
+              />
+            </SwiperSlide>
+
+            {/* Image Slide 2 */}
+            <SwiperSlide>
+              <img
+                src="https://images.unsplash.com/photo-1454496406107-dc34337da8d6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8b2ZmaWNpYWwlMjBkb2N1bWVudHN8ZW58MHx8MHx8fDA%3D"
+                alt="Document Image 2"
+                className="w-full h-72 object-cover"
+              />
+            </SwiperSlide>
+
+            {/* Image Slide 3 */}
+            <SwiperSlide>
+              <img
+                src="https://images.unsplash.com/photo-1659353684749-94297eedd492?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzV8fG9mZmljaWFsJTIwZG9mZmljaWFsJTIwZG9jdW1lbnRzfGVufDB8fDB8fHww"
+                alt="Document Image 3"
+                className="w-full h-72 object-cover"
+              />
+            </SwiperSlide>
+          </Swiper>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16">
+        <div className="container mx-auto text-left px-4">
+          <h2 className="text-3xl font-semibold mb-8">Our Features</h2>
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-8">
+            
+            {/* Feature 1: Document Generation */}
+            <Link to="/generate" style={{ textDecoration: 'none' }}>
+              <motion.div
+                className="bg-white p-6 rounded border-t-4 cursor-pointer"
+                style={{
+                  borderTop: '4px solid',
+                  borderImage: 'linear-gradient(119.54deg, #1cb5e0 0%, #000046 100%) 1',
+                }}
+                whileHover={{ scale: 1.05 }}
+              >
+                <div className="flex items-center">
+                  <FaUpload className="text-blue-500 text-2xl mr-4 pb-2" />
+                  <h3 className="text-xl font-semibold">Document Generation</h3>
+                </div>
+                <p className="text-gray-600 mt-2 pl-10">
+                  Generate your documents seamlessly with our user-friendly interface.
+                </p>
+              </motion.div>
+            </Link>
+
+            {/* Feature 2: Fast Verification */}
+            <Link to="/upload" style={{ textDecoration: 'none' }}>
+              <motion.div
+                className="bg-white p-6 rounded border-t-4 cursor-pointer"
+                style={{
+                  borderTop: '4px solid',
+                  borderImage: 'linear-gradient(119.54deg, #1cb5e0 0%, #000046 100%) 1',
+                }}
+                whileHover={{ scale: 1.05 }}
+              >
+                <div className="flex items-center">
+                  <FaCheckCircle className="text-green-500 text-2xl pb-2 mr-4" />
+                  <h3 className="text-xl font-semibold">Fast Verification</h3>
+                </div>
+                <p className="text-gray-600 mt-2 pl-10">
+                  Get your documents verified quickly using machine learning and blockchain security.
+                </p>
+              </motion.div>
+            </Link>
+
+            {/* Feature 3: Secure Access */}
+            <Link to="/profile" style={{ textDecoration: 'none' }}>
+              <motion.div
+                className="bg-white p-6 rounded border-t-4 cursor-pointer"
+                style={{
+                  borderTop: '4px solid',
+                  borderImage: 'linear-gradient(119.54deg, #1cb5e0 0%, #000046 100%) 1',
+                }}
+                whileHover={{ scale: 1.05 }}
+              >
+                <div className="flex items-center">
+                  <FaLock className="text-red-500 text-2xl pb-2 mr-4" />
+                  <h3 className="text-xl font-semibold">Secure Access</h3>
+                </div>
+                <p className="text-gray-600 mt-2 pl-10">
+                  Your documents are stored securely for every profile.
+                </p>
+              </motion.div>
+            </Link>
+
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Home;
+
+
+==== src\pages\MyDocuments.js ====
+
+// // src/pages/MyDocuments.js
+
+// import React from 'react';
+
+// const MyDocuments = () => {
+//   // Sample Data (Replace with dynamic data as needed)
+//   const documents = [
+//     {
+//       id: 1,
+//       title: 'Birth Certificate',
+//       type: 'Birth Certificate',
+//       status: 'Verified',
+//     },
+//     {
+//       id: 2,
+//       title: 'Academic Transcript',
+//       type: 'Academic Transcript',
+//       status: 'Pending',
+//     },
+//     // Add more documents as needed
+//   ];
+
+//   // Function to get status color
+//   const getStatusColor = (status) => {
+//     switch (status) {
+//       case 'Verified':
+//         return 'text-success';
+//       case 'Pending':
+//         return 'text-warning';
+//       case 'Rejected':
+//         return 'text-danger';
+//       default:
+//         return 'text-secondary';
+//     }
+//   };
+
+//   return (
+//     <div className="container mt-5">
+//       <h2><i className="fas fa-folder"></i> My Documents</h2>
+//       <div className="row">
+//         {documents.map((doc) => (
+//           <div className="col-md-4" key={doc.id}>
+//             <div className="card mb-4 shadow-sm">
+//               <div className="card-body">
+//                 <h5 className="card-title"><i className="fas fa-file-alt"></i> {doc.title}</h5>
+//                 <p className="card-text"><i className="fas fa-id-card"></i> Type: {doc.type}</p>
+//                 <p className={`card-text ${getStatusColor(doc.status)}`}>
+//                   <i className="fas fa-check-circle"></i> Status: {doc.status}
+//                 </p>
+//                 <a href="#" className="btn btn-primary">
+//                   <i className="fas fa-eye"></i> View Document
+//                 </a>
+//               </div>
+//             </div>
+//           </div>
+//         ))}
+//         {/* Add more cards dynamically */}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default MyDocuments;
+
+// src/pages/MyDocuments.js
+
+// src/pages/MyDocuments.js
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const MyDocuments = () => {
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch documents from the backend
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      try {
+        // Update this line to call the correct backend URL
+        const response = await axios.get('http://localhost:3001/api/documents');
+        setDocuments(response.data); // Set documents data
+        setLoading(false);
+      } catch (err) {
+        setError(`Error fetching documents: ${err.response?.data?.message || err.message}`);
+        setLoading(false);
+      }
+    };
+
+    fetchDocuments();
+  }, []);
+
+  // Function to get status color
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Verified':
+        return 'text-success';
+      case 'Pending':
+        return 'text-warning';
+      case 'Rejected':
+        return 'text-danger';
+      default:
+        return 'text-secondary';
+    }
+  };
+
+  if (loading) {
+    return <div className="container mt-5">Loading documents...</div>;
+  }
+
+  if (error) {
+    console.error(error);  // Log the error for debugging purposes
+    return <div className="container mt-5 text-danger">{error}</div>;
+  }
+
+  return (
+    <div className="container mt-5">
+      <h2><i className="fas fa-folder"></i> My Documents</h2>
+      <div className="row">
+        {documents.length > 0 ? (
+          documents.map((doc) => (
+            <div className="col-md-4" key={doc._id}>
+              <div className="card mb-4 shadow-sm">
+                <div className="card-body">
+                  <h5 className="card-title"><i className="fas fa-file-alt"></i> {doc.originalName}</h5>
+                  <p className="card-text"><i className="fas fa-id-card"></i> Type: {doc.documentType || 'N/A'}</p>
+                  <p className={`card-text ${getStatusColor(doc.verificationResult)}`}>
+                    <i className="fas fa-check-circle"></i> Status: {doc.verificationResult || 'Pending'}
+                  </p>
+                  <a href={doc.path} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+                    <i className="fas fa-eye"></i> View Document
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>No documents found.</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default MyDocuments;
+
+
+
+==== src\pages\Profile.js ====
+
+import React from 'react';
+import { motion } from 'framer-motion';
+
+const Profile = () => {
+  // Sample user data (replace with dynamic data as needed)
+  const user = {
+    name: 'Admin',
+    email: 'xyz@example.com',
+    profilePicture: 'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg', // Replace with actual profile picture URL
+  };
+
+  return (
+    <div className="bg-gray-100 min-h-screen py-12 px-4">
+      <div className="container mx-auto max-w-3xl bg-white p-8 rounded-lg shadow-none">
+        <div className="flex justify-center mb-6">
+          <motion.img
+            src={user.profilePicture}
+            alt="Profile"
+            className="w-32 h-32 rounded-full border-4 border-blue-500"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.6 }}
+          />
+        </div>
+        <h1 className="text-3xl font-semibold text-center mb-4">{user.name}</h1>
+        <p className="text-center text-gray-600 mb-4">{user.email}</p>
+
+        {/* Profile Details Section */}
+        <div className="bg-gray-50 p-6 rounded-lg shadow-none">
+          <h2 className="text-xl font-semibold mb-4">Profile Details</h2>
+          <p className="mb-2"><span className="font-semibold">Name:</span> {user.name}</p>
+          <p className="mb-2"><span className="font-semibold">Email:</span> {user.email}</p>
+          {/* Add more user details as needed */}
+        </div>
+
+        {/* Edit Profile Button */}
+        <div className="mt-6 text-center">
+          <a href="#" className="text-blue-500 hover:underline">Edit Profile</a>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Profile;
+
+
+==== src\pages\temp.js ====
+
+const axios = require('axios');
+
+// Define the data you want to send in the POST request
+const blockData = {
+  // Include the data fields required by your API
+  document_content: "data1"
+  // Add more fields as needed
+};
+
+// Function to add a block
+async function addBlock() {
+  try {
+    // Make the POST request
+    const response = await axios.post('http://192.168.247.170:3000/api/blockchain/add-block', blockData);
+
+    // Handle the response
+    console.log('Block added successfully:', response.data);
+  } catch (error) {
+    // Handle any errors
+    console.error('Error adding block:', error.message);
+  }
+}
+
+// Call the function to add a block
+addBlock();
+
+==== src\pages\VerificationRequests.js ====
+
+// src/pages/VerificationRequests.js
+
+import React from 'react';
+
+const VerificationRequests = () => {
+  // Sample Data (Replace with dynamic data as needed)
+  const requests = [
+    {
+      id: 1,
+      documentType: 'Birth Certificate',
+      user: 'John Doe',
+      dateSubmitted: '2024-08-25',
+      status: 'Pending',
+    },
+    {
+      id: 2,
+      documentType: 'Academic Transcript',
+      user: 'Jane Smith',
+      dateSubmitted: '2024-08-20',
+      status: 'Approved',
+    },
+    // Add more requests as needed
+  ];
+
+  // Function to get status color
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Approved':
+        return 'text-success';
+      case 'Pending':
+        return 'text-warning';
+      case 'Rejected':
+        return 'text-danger';
+      default:
+        return 'text-secondary';
+    }
+  };
+
+  return (
+    <div className="container mt-5">
+      <h2>Verification Requests</h2>
+      <table className="table table-hover mt-3">
+        <thead className="table-primary">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Document Type</th>
+            <th scope="col">User</th>
+            <th scope="col">Date Submitted</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {requests.map((req) => (
+            <tr key={req.id}>
+              <th scope="row">{req.id}</th>
+              <td>{req.documentType}</td>
+              <td>{req.user}</td>
+              <td>{req.dateSubmitted}</td>
+              <td className={getStatusColor(req.status)}>
+                {req.status}
+              </td>
+              <td>
+                <button className="btn btn-primary btn-sm me-2">
+                  View
+                </button>
+                <button className="btn btn-secondary btn-sm">
+                  Edit
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default VerificationRequests;
+
+
+==== src\App.js ====
+
+// import React from 'react';
+// import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+// import Navbar from './components/Navbar';
+// import Footer from './components/Footer';
+// import Home from './pages/Home';
+// import MyDocuments from './pages/MyDocuments';
+// import UploadDocument from './pages/UploadDocument';
+// import VerificationRequests from './pages/VerificationRequests';
+// import Profile from './pages/Profile';
+
+// function App() {
+//   return (
+//     <Router>
+//       <div className="app-container">
+//         <Navbar />
+//         <main className="main-content container mt-5 mb-5">
+//           <Routes>
+//             <Route path="/" element={<Home />} />
+//             <Route path="/my-documents" element={<MyDocuments />} />
+//             <Route path="/upload-document" element={<UploadDocument />} />
+//             <Route path="/verification-requests" element={<VerificationRequests />} />
+//             <Route path="/profile" element={<Profile />} />
+//           </Routes>
+//         </main>
+//         <Footer />
+//       </div>
+//     </Router>
+//   );
+// }
+
+// export default App;
+
+
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import UploadDocument from './pages/UploadDocument';
+import Generate from './pages/Generate'; 
+//import MyDocuments from './pages/MyDocuments';
+import Profile from './pages/Profile'; // Import the Profile component
+
+function App() {
+  return (
+    <Router>
+      <div>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/upload" element={<UploadDocument />} />
+          {/* <Route path="/documents" element={<MyDocuments />} /> */}
+          <Route path="/generate" element={<Generate />} /> {/* Add route for Generate */}
+          <Route path="/profile" element={<Profile />} /> {/* Add the route for Profile */}
+        </Routes>
+        <Footer />
+      </div>
+    </Router>
+  );
+}
+
+export default App;
+
+
+==== src\index.css ====
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+==== src\index.js ====
+
+// Remove or comment this line
+// import reportWebVitals from './reportWebVitals';
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
+// const cors = require('cors');
+// const corsOptions ={
+//     origin:'http://localhost:3000', 
+//     credentials:true,            //access-control-allow-credentials:true
+//     optionSuccessStatus:200
+// }
+// app.use(cors(corsOptions));
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+
+// Remove or comment this line if it's there
+// reportWebVitals();
+
+
+==== app.js ====
+
+const express = require('express');
+const multer = require('multer');
+const Tesseract = require('tesseract.js');
+const path = require('path');
+const app = express();
+const port = 3000;
+
+const cors = require('cors');
+
+app.use(cors);
+
+// Set up multer for image upload
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// Utility function for regex pattern matching
+const extractDetails = (text) => {
+  const lines = text.trim().split('\n');
+  const name = lines[2]?.trim() || "Name not found";
+
+  const dobPattern = /DOB\s*:\s*(\d{2}\/\d{2}\/\d{4})/;
+  const genderPattern = /(Male|Female)/i;
+  const aadharPattern = /(\d{4}\s\d{4}\s\d{4})/;
+
+  const dobMatch = dobPattern.exec(text);
+  const genderMatch = genderPattern.exec(text);
+  const aadharMatch = aadharPattern.exec(text);
+
+  return {
+    name,
+    dob: dobMatch ? dobMatch[1] : "DOB not found",
+    gender: genderMatch ? genderMatch[1] : "Gender not found",
+    aadhar: aadharMatch ? aadharMatch[1] : "Aadhaar not found"
+  };
+};
+
+// POST endpoint to handle image upload and OCR processing
+app.post('/process-image', upload.single('image'), (req, res) => {
+  const imagePath = req.file.path;
+
+  Tesseract.recognize(
+    imagePath,
+    'eng+guj',
+    { logger: m => console.log(m) }
+  ).then(({ data: { text } }) => {
+    const details = extractDetails(text);
+    res.json(details);
+  }).catch(err => {
+    res.status(500).json({ error: err.message });
+  });
+});
+
+app.listen(port, () => {
+  console.log(`API running on http://localhost:${port}`);
+});
+
+
+==== package.json ====
+
+{
+  "name": "doc-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.6.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.7.7",
+    "bootstrap": "^5.3.3",
+    "cors": "^2.8.5",
+    "form-data": "^4.0.0",
+    "framer-motion": "^11.5.4",
+    "fs": "^0.0.1-security",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.3.0",
+    "react-router-dom": "^6.26.1",
+    "react-scripts": "^5.0.1",
+    "swiper": "^11.1.14",
+    "tesseract.js": "^5.1.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://localhost:3001",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.45",
+    "tailwindcss": "^3.4.10"
+  }
+}
