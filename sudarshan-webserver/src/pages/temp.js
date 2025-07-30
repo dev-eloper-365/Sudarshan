@@ -11,7 +11,7 @@ const blockData = {
 async function addBlock() {
   try {
     // Make the POST request
-    const response = await axios.post('http://localhost:3000/api/blockchain/add-block', blockData);
+    const response = await axios.post('https://sudarshan-blockchain.onrender.com/api/blockchain/add-block', blockData);
 
     // Handle the response
     console.log('Block added successfully:', response.data);

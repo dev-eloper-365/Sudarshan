@@ -9,7 +9,7 @@ async function addBlock(blockData) {
     
     // Make the POST request
     const response = await axios.post(
-      'http://localhost:3000/api/blockchain/add-block', // Changed to http and correct localhost
+      'https://sudarshan-blockchain.onrender.com/api/blockchain/add-block',
       blockData,
       {
         headers: {

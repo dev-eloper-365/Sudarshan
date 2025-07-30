@@ -79,7 +79,7 @@ const MyDocuments = () => {
     const fetchDocuments = async () => {
       try {
         // Update this line to call the correct backend URL
-        const response = await axios.get('http://localhost:3001/api/documents');
+        const response = await axios.get('https://sudarshan-blockchain.onrender.com/api/documents');
         setDocuments(response.data); // Set documents data
         setLoading(false);
       } catch (err) {

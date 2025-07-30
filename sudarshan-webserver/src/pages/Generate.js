@@ -4,7 +4,7 @@ import axios from 'axios';
 
 async function addBlock(blockData) {
   try {
-    const response = await axios.post('http://localhost:3000/api/blockchain/add-block', blockData);
+    const response = await axios.post('https://sudarshan-blockchain.onrender.com/api/blockchain/add-block', blockData);
     console.log('Block added successfully:', response.data);
     return response.data;
   } catch (error) {
