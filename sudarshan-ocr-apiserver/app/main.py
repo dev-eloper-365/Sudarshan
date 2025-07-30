@@ -19,14 +19,36 @@ app = FastAPI(
     version="1.0.0"
 )
 
-origins = ["*"]
+# CORS configuration - be specific about allowed origins
+origins = [
+    "http://localhost:3000",
+    "http://localhost:3001", 
+    "http://127.0.0.1:3000",
+    "https://sudarshan-ten.vercel.app",
+    "https://*.vercel.app",  # Allow all Vercel apps
+    "*"  # Fallback for development
+]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
+
+# Add explicit OPTIONS handler for preflight requests
+@app.options("/{path:path}")
+async def options_handler(path: str):
+    return JSONResponse(
+        content={},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+        }
+    )
 
 @app.get("/")
 def read_root():
@@ -42,12 +64,14 @@ def health_check():
         return {
             "status": "healthy",
             "tesseract_version": str(version),
-            "python_version": os.sys.version
+            "python_version": os.sys.version,
+            "cors_origins": origins
         }
     except Exception as e:
         return {
             "status": "unhealthy", 
-            "error": str(e)
+            "error": str(e),
+            "cors_origins": origins
         }
 
 @app.post("/extract-details/")
@@ -60,7 +84,7 @@ async def extract_details(file: UploadFile = File(...)):
         logger.info(f"Processing file: {file.filename}, content_type: {file.content_type}")
         
         # Validate file type
-        if not file.content_type.startswith('image/'):
+        if not file.content_type or not file.content_type.startswith('image/'):
             raise HTTPException(status_code=400, detail="File must be an image")
         
         # Create temp directory if it doesn't exist
@@ -90,21 +114,29 @@ async def extract_details(file: UploadFile = File(...)):
         result = process_aadhaar_image(temp_file_path)
         logger.info(f"Processing result: {result}")
 
-        return JSONResponse(content=result)
+        # Return response with explicit CORS headers
+        response = JSONResponse(content=result)
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        return response
 
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error processing file: {str(e)}")
         logger.error(f"Traceback: {traceback.format_exc()}")
-        raise HTTPException(
-            status_code=500, 
-            detail={
+        
+        # Create error response with CORS headers
+        error_response = JSONResponse(
+            status_code=500,
+            content={
                 "error": str(e),
                 "type": type(e).__name__,
-                "traceback": traceback.format_exc()
+                "detail": "Internal server error during image processing"
             }
         )
+        error_response.headers["Access-Control-Allow-Origin"] = "*"
+        return error_response
+        
     finally:
         # Clean up temporary file
         if temp_file_path and os.path.exists(temp_file_path):
@@ -124,7 +156,7 @@ async def extract_pan_details(file: UploadFile = File(...)):
         logger.info(f"Processing PAN file: {file.filename}")
         
         # Validate file type
-        if not file.content_type.startswith('image/'):
+        if not file.content_type or not file.content_type.startswith('image/'):
             raise HTTPException(status_code=400, detail="File must be an image")
         
         # Create temp directory if it doesn't exist
@@ -140,20 +172,29 @@ async def extract_pan_details(file: UploadFile = File(...)):
         # Process the PAN card image
         result = process_pan_image(temp_file_path)
 
-        return JSONResponse(content=result)
+        # Return response with explicit CORS headers
+        response = JSONResponse(content=result)
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        return response
 
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error processing PAN file: {str(e)}")
         logger.error(f"Traceback: {traceback.format_exc()}")
-        raise HTTPException(
-            status_code=500, 
-            detail={
+        
+        # Create error response with CORS headers
+        error_response = JSONResponse(
+            status_code=500,
+            content={
                 "error": str(e),
-                "type": type(e).__name__
+                "type": type(e).__name__,
+                "detail": "Internal server error during PAN processing"
             }
         )
+        error_response.headers["Access-Control-Allow-Origin"] = "*"
+        return error_response
+        
     finally:
         # Clean up temporary file
         if temp_file_path and os.path.exists(temp_file_path):
@@ -161,6 +202,14 @@ async def extract_pan_details(file: UploadFile = File(...)):
                 os.remove(temp_file_path)
             except Exception as cleanup_error:
                 logger.warning(f"Failed to cleanup temp file: {cleanup_error}")
+
+# Add a test CORS endpoint
+@app.get("/test-cors")
+def test_cors():
+    """Test endpoint to verify CORS is working"""
+    response = JSONResponse(content={"message": "CORS is working!", "timestamp": str(os.times())})
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
 
 # Serverless handler
 handler = Mangum(app)
