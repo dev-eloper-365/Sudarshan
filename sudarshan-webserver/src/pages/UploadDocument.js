@@ -9,12 +9,10 @@ async function addBlock(blockData) {
     
     // Make the POST request
     const response = await axios.post(
-      // 'https://sudarshan-blockchain-prod.vercel.app/api/blockchain/verify-data',
-      'https://localhost:3000/api/blockchain/add-block',
+      'http://localhost:3000/api/blockchain/add-block', // Changed to http and correct localhost
       blockData,
       {
         headers: {
-          'X-API-KEY': process.env.API_KEY,
           'Content-Type': 'application/json'
         }
       }
@@ -75,10 +73,9 @@ const UploadDocument = () => {
       setResult(extractedData);
       // console.log(extractedData['aadhaar_number']);
       extractedData.aadhaar_number = extractedData.aadhaar_number.replace(/\s+/g, '');
+      // Use Aadhaar number as the document_content (string) for blockchain registration
       const blockData = {
-        document_content: {
-          aadhar_number: extractedData.aadhaar_number
-        }
+        document_content: extractedData.aadhaar_number // send as string, not object
       };
 
       // Add the block and get the response
