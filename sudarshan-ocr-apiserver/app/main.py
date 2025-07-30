@@ -1,13 +1,9 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from mangum import Mangum
-import shutil
-import os
 import logging
-import traceback
-from app.utils.image_processing import process_aadhaar_image
-from app.utils.pan_processing import process_pan_image
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -19,15 +15,40 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS configuration - be specific about allowed origins
-origins = [
-    "http://localhost:3000",
-    "http://localhost:3001", 
-    "http://127.0.0.1:3000",
-    "https://sudarshan-ten.vercel.app",
-    "https://*.vercel.app",  # Allow all Vercel apps
-    "*"  # Fallback for development
-]
+# Custom CORS middleware as a backup
+class CustomCORSMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        # Handle preflight requests
+        if request.method == "OPTIONS":
+            response = JSONResponse(content={})
+            response.headers["Access-Control-Allow-Origin"] = "*"
+            response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+            response.headers["Access-Control-Allow-Headers"] = "*"
+            response.headers["Access-Control-Max-Age"] = "86400"
+            return response
+        
+        # Process the request
+        response = await call_next(request)
+        
+        # Add CORS headers to all responses
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        
+        return response
+
+# Add the custom CORS middleware
+app.add_middleware(CustomCORSMiddleware)
+
+# Also add the standard CORS middleware as backup
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.add_middleware(
     CORSMiddleware,
