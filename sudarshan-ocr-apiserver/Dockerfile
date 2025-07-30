@@ -37,8 +37,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the application code
 COPY . .
 
-# Create temp directory for file uploads
-RUN mkdir -p /app/temp && chmod 777 /app/temp
+# Create temp directory with proper permissions
+RUN mkdir -p /tmp/app_temp && chmod 777 /tmp/app_temp
+
+# Create app user and set ownership
+RUN adduser --disabled-password --gecos '' appuser && \
+    chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
 
 # Expose the port
 EXPOSE 8000
