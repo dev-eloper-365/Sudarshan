@@ -39,17 +39,6 @@ app.add_middleware(
     expose_headers=["*"]
 )
 
-@app.options("/{path:path}")
-async def options_handler(path: str):
-    return JSONResponse(
-        content={},
-        headers={
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-            "Access-Control-Allow-Headers": "*",
-        }
-    )
-
 @app.get("/")
 def read_root():
     return {"message": "Sudarshan AI API", "status": "running"}
@@ -227,14 +216,12 @@ async def extract_pan_details(file: UploadFile = File(...)):
 
 @app.get("/test-cors")
 def test_cors():
-    """Test endpoint to verify CORS is working"""
-    response = JSONResponse(content={
-        "message": "CORS is working!", 
-        "temp_dir": tempfile.gettempdir(),
-        "timestamp": str(os.times())
-    })
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    return response
+    """Test CORS endpoint"""
+    return {
+        "message": "CORS is working!",
+        "timestamp": "2024-01-01T00:00:00Z",
+        "allowed_origins": origins
+    }
 
 # Serverless handler
 handler = Mangum(app)
