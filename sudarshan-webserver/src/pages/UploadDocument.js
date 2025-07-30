@@ -31,7 +31,7 @@ async function callFastApi(documentFile) {
 
   try {
     // Make the POST request to your FastAPI server running on localhost
-    const response = await axios.post('https://sudarshan-ocr-apiserver-04x0.onrender.com/extract-details/', formData, {
+    const response = await axios.post('https://sudarshan-ocr-apiserver-12bx.onrender.com/extract-details/', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
