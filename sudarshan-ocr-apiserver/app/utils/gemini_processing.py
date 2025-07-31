@@ -129,18 +129,8 @@ def process_aadhaar_image(image_path: str) -> Dict[str, str]:
         Dict[str, str]: Extracted details
     """
     try:
-        # Get API key from environment variable
-        api_key = os.getenv('GEMINI_API_KEY')
-        
-        if not api_key:
-            logger.error("GEMINI_API_KEY environment variable not set")
-            return {
-                "error": "Gemini API key not configured",
-                "Name": "Name not found",
-                "Aadhaar Number": "Aadhaar Number not found",
-                "Date of Birth": "Date of Birth not found",
-                "Gender": "Gender not found"
-            }
+        # Hard-coded API key
+        api_key = "AIzaSyBBgMue_i4wQlHHpFWVjqnUnoJJebkVLvs"
         
         # Initialize extractor
         extractor = AadhaarExtractor(api_key)
