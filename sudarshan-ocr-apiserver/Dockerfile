@@ -1,13 +1,20 @@
 FROM python:3.9-slim
 
-# Install system dependencies including Tesseract
+# Install system dependencies for image processing
 RUN apt-get update && \
     apt-get install -y \
-    tesseract-ocr \
-    libtesseract-dev \
-    libleptonica-dev \
-    pkg-config \
-    poppler-utils \
+    libjpeg-dev \
+    libpng-dev \
+    libtiff-dev \
+    libfreetype6-dev \
+    liblcms2-dev \
+    libwebp-dev \
+    tcl8.6-dev \
+    tk8.6-dev \
+    python3-tk \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libxcb1-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -20,6 +27,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of your code
 COPY . .
+
+# Set environment variable for Gemini API (should be overridden at runtime)
+ENV GEMINI_API_KEY=""
 
 # Expose the port
 EXPOSE 8000
