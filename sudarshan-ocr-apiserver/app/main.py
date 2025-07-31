@@ -7,7 +7,7 @@ import os
 import tempfile
 import logging
 import traceback
-from app.utils.image_processing import process_aadhaar_image
+from app.utils.gemini_processing import process_aadhaar_image
 from app.utils.pan_processing import process_pan_image
 
 # Configure logging
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Aadhaar Card Processing API",
-    description="An API to extract details from Aadhaar card images.",
+    description="An API to extract details from Aadhaar card images using Gemini AI.",
     version="1.0.0"
 )
 
@@ -47,9 +47,8 @@ def read_root():
 def health_check():
     """Health check endpoint"""
     try:
-        # Test Tesseract availability
-        import pytesseract
-        version = pytesseract.get_tesseract_version()
+        # Test Gemini availability
+        import google.generativeai as genai
         
         # Test temp directory access
         temp_dir = tempfile.gettempdir()
@@ -65,7 +64,7 @@ def health_check():
             
         return {
             "status": "healthy",
-            "tesseract_version": str(version),
+            "processing_engine": "Google Gemini AI",
             "python_version": os.sys.version,
             "temp_directory": temp_dir,
             "temp_writable": temp_writable,
@@ -81,7 +80,7 @@ def health_check():
 @app.post("/extract-details/")
 async def extract_details(file: UploadFile = File(...)):
     """
-    Endpoint to upload an Aadhaar card image and extract details.
+    Endpoint to upload an Aadhaar card image and extract details using Gemini AI.
     """
     temp_file_path = None
     try:
@@ -117,8 +116,8 @@ async def extract_details(file: UploadFile = File(...)):
         if file_size == 0:
             raise Exception("Uploaded file is empty")
 
-        # Process the image
-        logger.info("Starting image processing...")
+        # Process the image using Gemini AI
+        logger.info("Starting Gemini AI image processing...")
         result = process_aadhaar_image(temp_file_path)
         logger.info(f"Processing completed successfully")
 
