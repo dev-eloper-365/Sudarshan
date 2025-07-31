@@ -28,9 +28,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of your code
 COPY . .
 
-# Set environment variable for Gemini API (should be overridden at runtime)
-ENV GEMINI_API_KEY=""
-
 # Expose the port
 EXPOSE 8000
 
