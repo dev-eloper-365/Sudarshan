@@ -33,27 +33,21 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
 import Home from './pages/Home';
 import UploadDocument from './pages/UploadDocument';
 import Generate from './pages/Generate'; 
-//import MyDocuments from './pages/MyDocuments';
-import Profile from './pages/Profile'; // Import the Profile component
+import Profile from './pages/Profile';
 
 function App() {
   return (
     <Router>
       <div>
-        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/upload" element={<UploadDocument />} />
-          {/* <Route path="/documents" element={<MyDocuments />} /> */}
-          <Route path="/generate" element={<Generate />} /> {/* Add route for Generate */}
-          <Route path="/profile" element={<Profile />} /> {/* Add the route for Profile */}
+          <Route path="/generate" element={<Generate />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
-        <Footer />
       </div>
     </Router>
   );

@@ -28,15 +28,15 @@ function Footer() {
       <div className="max-w-7xl mx-auto px-4">
         <p className="mb-2 text-sm">&copy; 2024 Sudarshan. All rights reserved.</p>
         <div className="flex justify-center space-x-4">
-          <a href="#" className="text-white text-xl hover:text-gray-300 transition-colors">
+          <button className="text-white text-xl hover:text-gray-300 transition-colors bg-transparent border-none cursor-pointer">
             <FaFacebookF />
-          </a>
-          <a href="#" className="text-white text-xl hover:text-gray-300 transition-colors">
+          </button>
+          <button className="text-white text-xl hover:text-gray-300 transition-colors bg-transparent border-none cursor-pointer">
             <FaTwitter />
-          </a>
-          <a href="#" className="text-white text-xl hover:text-gray-300 transition-colors">
+          </button>
+          <button className="text-white text-xl hover:text-gray-300 transition-colors bg-transparent border-none cursor-pointer">
             <FaLinkedinIn />
-          </a>
+          </button>
         </div>
       </div>
     </footer>

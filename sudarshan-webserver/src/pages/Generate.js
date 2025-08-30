@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import SharedNavbar from '../components/SharedNavbar';
 
 async function addBlock(blockData) {
   try {
@@ -169,10 +170,14 @@ const Generate = () => {
   const maxDate = new Date(2006, 11, 31).toISOString().split('T')[0];
 
   return (
-    <div className="bg-gray-50 min-h-screen py-12 px-6">
-      <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md">
+    <div className="min-h-screen royal-black-bg relative overflow-hidden" style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', overflow: 'hidden' }}>
+      <SharedNavbar />
+      
+      <div className="relative z-10 flex flex-col items-center justify-center px-8 py-20 max-w-4xl mx-auto">
+        <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-2xl border border-white/20 w-full max-w-lg">
         <motion.h2
-          className="text-3xl font-bold text-gray-800 mb-6"
+          className="text-3xl font-bold text-white mb-6 text-center"
+          style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -182,7 +187,7 @@ const Generate = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="name" className="block text-gray-700 text-sm font-semibold mb-2">
+            <label htmlFor="name" className="block text-white text-sm font-semibold mb-2">
               Name
             </label>
             <input
@@ -192,7 +197,7 @@ const Generate = () => {
               value={formData.name}
               onChange={handleChange}
               placeholder="Enter your name"
-              className="block w-full mt-1 border-0 border-b-2 border-gray-300 bg-transparent text-gray-500 focus:ring-0 focus:border-blue-500 placeholder-opacity-50"
+              className="block w-full mt-1 border-0 border-b-2 border-white/30 bg-transparent text-white focus:ring-0 focus:border-orange-400 placeholder-white/50"
               required
             />
           </div>
@@ -267,7 +272,8 @@ const Generate = () => {
 
           <motion.button
             type="submit"
-            className="w-full bg-blue-500 text-white py-3 rounded-md shadow-lg hover:bg-blue-600 transition-transform transform-gpu"
+            className="w-full bg-gradient-to-r from-pink-500 to-orange-500 text-white py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
+            style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
             whileHover={{ scale: 1.05 }}
           >
             Generate
@@ -283,6 +289,7 @@ const Generate = () => {
             </button>
           </>
         )}
+        </div>
       </div>
     </div>
   );

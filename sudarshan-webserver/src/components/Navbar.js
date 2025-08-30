@@ -16,8 +16,7 @@ const Navbar = () => {
     <div>
       {/* Navbar below the logos */}
       <nav
-        className="text-white shadow-lg h-16 py-4" // Increased height to h-16 and added padding for better alignment
-        style={{ background: 'linear-gradient(119.54deg, #1cb5e0 0%, #000046 100%)' }} // Reversed gradient
+        className="text-white shadow-lg h-16 py-4 bg-transparent" // Removed gradient, made transparent
       >
         <div className="flex justify-between items-center w-full h-full">
           {/* Left Aligned Logo */}

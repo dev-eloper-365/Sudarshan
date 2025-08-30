@@ -1,157 +1,142 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaUpload, FaCheckCircle, FaLock } from 'react-icons/fa';
+import { FaUpload, FaCheckCircle, FaUsers, FaFileAlt } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
-import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 
 const Home = () => {
-  const containerStyle = {
-    fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-  };
-
   return (
-    <div className="bg-gray-100 min-h-screen" style={containerStyle}>
-      {/* Swiper Image Slider */}
-      <section className="my-0">
-        <div className="w-full">
-          <Swiper
-            modules={[Autoplay, Pagination, Navigation]}
-            spaceBetween={0}
-            centeredSlides={false}
-            autoplay={{
-              delay: 2500,
-              disableOnInteraction: false,
-            }}
-            pagination={{ clickable: true }}
-            navigation={true}
-            className="mySwiper full-width-swiper"
+    <div className="min-h-screen royal-black-bg relative overflow-hidden" style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+      
+      {/* Header */}
+      <header className="relative z-10 flex items-center justify-between px-8 py-6 max-w-7xl mx-auto">
+        {/* Logo */}
+        <div className="flex items-center">
+          <div className="w-10 h-10 bg-gradient-to-r from-orange-400 to-pink-500 rounded-lg flex items-center justify-center mr-3 shadow-lg">
+            <FaFileAlt className="text-white text-lg" />
+          </div>
+          <span className="text-white text-2xl font-bold">Sudarshan</span>
+        </div>
+
+        {/* Navigation */}
+        <nav className="hidden md:flex items-center space-x-8">
+          <Link to="/" className="text-white hover:text-orange-400 transition-colors font-medium">Home</Link>
+          <Link to="/upload" className="text-white hover:text-orange-400 transition-colors font-medium">How it work?</Link>
+          <Link to="/profile" className="text-white hover:text-orange-400 transition-colors font-medium">About us</Link>
+          <span className="text-white hover:text-orange-400 transition-colors cursor-pointer font-medium">Support</span>
+        </nav>
+
+        {/* Auth Buttons */}
+        <div className="flex items-center space-x-4">
+          <span className="text-white hover:text-orange-400 transition-colors cursor-pointer font-medium">Login</span>
+          <button className="bg-gradient-to-r from-pink-500 to-orange-500 text-white px-6 py-2.5 rounded-lg hover:shadow-lg transition-all duration-300 font-medium">
+            Sign up
+          </button>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative z-10 flex flex-col lg:flex-row items-start justify-between px-8 py-20 max-w-7xl mx-auto">
+        {/* Left Content */}
+        <div className="lg:w-1/2 mb-16 lg:mb-0 lg:pr-12">
+          <motion.h1 
+            className="text-5xl lg:text-6xl font-black text-white mb-6 leading-tight"
+            style={{ fontFamily: 'Inter, sans-serif', fontWeight: 900 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            {/* Welcome Text Slide */}
-            <SwiperSlide>
-              <div className="flex flex-col items-center justify-center h-72 bg-gradient-to-r from-blue-500 to-green-500 text-white">
-                <motion.h1
-                  className="text-6xl font-bold"
-                  initial={{ opacity: 0, y: -50 }}
+            Discover the Unexpected with your Smart Friend
+            <span className="inline-block ml-3">
+              <div className="w-5 h-5 bg-gradient-to-r from-pink-500 to-orange-500 rounded-sm transform rotate-45 shadow-sm"></div>
+            </span>
+          </motion.h1>
+          
+          <motion.p 
+            className="text-xl text-gray-300 mb-10 leading-relaxed"
+            style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}
+            initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  Welcome to Document Verification System
-                </motion.h1>
-                <p className="mt-4 text-lg">
-                  Upload and verify your documents with ease!
-                </p>
-                <Link to="/generate" style={{ textDecoration: 'none' }}>
-                  <motion.button
-                    className="mt-6 bg-white text-blue-500 px-6 py-3 rounded-full font-semibold hover:bg-yellow-400 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
-                    whileHover={{ scale: 1.1 }}
-                  >
-                    Get Started
-                  </motion.button>
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            Helping people and small businesses see the bigger picture with secure document verification and blockchain technology.
+          </motion.p>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <Link to="/upload">
+              <button className="bg-gradient-to-r from-pink-500 to-orange-500 text-white px-8 py-4 rounded-lg font-semibold hover:shadow-xl transition-all duration-300 flex items-center text-lg" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                Get the App
+                <FaUpload className="ml-3 text-white text-lg" />
+              </button>
                 </Link>
+          </motion.div>
               </div>
-            </SwiperSlide>
 
-            {/* Image Slide 1 */}
-            <SwiperSlide>
-              <img
-                src="https://images.unsplash.com/photo-1707157281599-d155d1da5b4c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG9mZmljaWFsJTIwZG9jdW1lbnRzfGVufDB8fDB8fHww"
-                alt="Document Image 1"
-                className="w-full h-72 object-cover"
-              />
-            </SwiperSlide>
+        {/* Right Visual Area */}
+        <div className="lg:w-1/2 relative flex items-start justify-center">
+          {/* 3D Glassmorphism Cards */}
+          <motion.div 
+            className="card-3d-container"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.5 }}
+          >
+            {/* Bottom Card (Back) */}
+            <div className="glassmorphism-card-3d bottom-card absolute">
+              <div className="card-logo">VERIFIED</div>
+              <div className="card-chip"></div>
+              <div className="card-number">4785 0*** **** 4520</div>
+              <div className="card-name">Muhammad Shefuddoula</div>
+              <div className="card-date">25/12/2022</div>
+              <div className="card-ring"></div>
+            </div>
 
-            {/* Image Slide 2 */}
-            <SwiperSlide>
-              <img
-                src="https://images.unsplash.com/photo-1454496406107-dc34337da8d6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8b2ZmaWNpYWwlMjBkb2N1bWVudHN8ZW58MHx8MHx8fDA%3D"
-                alt="Document Image 2"
-                className="w-full h-72 object-cover"
-              />
-            </SwiperSlide>
-
-            {/* Image Slide 3 */}
-            <SwiperSlide>
-              <img
-                src="https://images.unsplash.com/photo-1659353684749-94297eedd492?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzV8fG9mZmljaWFsJTIwZG9mZmljaWFsJTIwZG9jdW1lbnRzfGVufDB8fDB8fHww"
-                alt="Document Image 3"
-                className="w-full h-72 object-cover"
-              />
-            </SwiperSlide>
-          </Swiper>
+            {/* Top Card (Front) */}
+            <div className="glassmorphism-card-3d top-card absolute">
+              <div className="card-logo">SUDARSHAN</div>
+              <div className="card-chip"></div>
+              <div className="card-number">4785 0125 012 4520</div>
+              <div className="card-name">Muhammad Shefuddoula</div>
+              <div className="card-date">25/12/2023</div>
+              <div className="card-ring"></div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-16">
-        <div className="container mx-auto text-left px-4">
-          <h2 className="text-3xl font-semibold mb-8">Our Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-1 gap-8">
-            
-            {/* Feature 1: Document Generation */}
-            <Link to="/generate" style={{ textDecoration: 'none' }}>
+      {/* Statistics Section */}
+      <section className="relative z-10 px-8 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 max-w-5xl mx-auto">
+          {/* Left Column */}
               <motion.div
-                className="bg-white p-6 rounded border-t-4 cursor-pointer"
-                style={{
-                  borderTop: '4px solid',
-                  borderImage: 'linear-gradient(119.54deg, #1cb5e0 0%, #000046 100%) 1',
-                }}
-                whileHover={{ scale: 1.05 }}
-              >
-                <div className="flex items-center">
-                  <FaUpload className="text-blue-500 text-2xl mr-4 pb-2" />
-                  <h3 className="text-xl font-semibold">Document Generation</h3>
+            className="text-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            <div className="w-20 h-20 bg-gradient-to-r from-pink-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <FaUsers className="text-white text-3xl" />
                 </div>
-                <p className="text-gray-600 mt-2 pl-10">
-                  Generate your documents seamlessly with our user-friendly interface.
-                </p>
+            <h3 className="text-3xl font-bold text-white mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>4000+ Active users</h3>
+            <p className="text-gray-300 text-lg leading-relaxed" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>We have approximately 4000+ active users from across the world.</p>
               </motion.div>
-            </Link>
 
-            {/* Feature 2: Fast Verification */}
-            <Link to="/upload" style={{ textDecoration: 'none' }}>
+          {/* Right Column */}
               <motion.div
-                className="bg-white p-6 rounded border-t-4 cursor-pointer"
-                style={{
-                  borderTop: '4px solid',
-                  borderImage: 'linear-gradient(119.54deg, #1cb5e0 0%, #000046 100%) 1',
-                }}
-                whileHover={{ scale: 1.05 }}
-              >
-                <div className="flex items-center">
-                  <FaCheckCircle className="text-green-500 text-2xl pb-2 mr-4" />
-                  <h3 className="text-xl font-semibold">Fast Verification</h3>
+            className="text-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+          >
+            <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <FaCheckCircle className="text-white text-3xl" />
                 </div>
-                <p className="text-gray-600 mt-2 pl-10">
-                  Get your documents verified quickly using machine learning and blockchain security.
-                </p>
+            <h3 className="text-3xl font-bold text-white mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>5M+ Transaction</h3>
+            <p className="text-gray-300 text-lg leading-relaxed" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>In our lifetime, we have already completed 5M transactions.</p>
               </motion.div>
-            </Link>
-
-            {/* Feature 3: Secure Access */}
-            <Link to="/profile" style={{ textDecoration: 'none' }}>
-              <motion.div
-                className="bg-white p-6 rounded border-t-4 cursor-pointer"
-                style={{
-                  borderTop: '4px solid',
-                  borderImage: 'linear-gradient(119.54deg, #1cb5e0 0%, #000046 100%) 1',
-                }}
-                whileHover={{ scale: 1.05 }}
-              >
-                <div className="flex items-center">
-                  <FaLock className="text-red-500 text-2xl pb-2 mr-4" />
-                  <h3 className="text-xl font-semibold">Secure Access</h3>
-                </div>
-                <p className="text-gray-600 mt-2 pl-10">
-                  Your documents are stored securely for every profile.
-                </p>
-              </motion.div>
-            </Link>
-
-          </div>
         </div>
       </section>
     </div>

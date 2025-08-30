@@ -35,7 +35,7 @@ const Profile = () => {
 
         {/* Edit Profile Button */}
         <div className="mt-6 text-center">
-          <a href="#" className="text-blue-500 hover:underline">Edit Profile</a>
+          <button className="text-blue-500 hover:underline bg-transparent border-none cursor-pointer">Edit Profile</button>
         </div>
       </div>
     </div>

@@ -1,3 +1,413 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Inter Font Family */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+/* Royal Black Background */
+.royal-black-bg {
+  background: radial-gradient(circle at center, #000000 0%, #0a0a0a 30%, #1a1a1a 70%, #000000 100%);
+  position: relative;
+}
+
+.royal-black-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 20% 20%, #1a1a1a 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 80%, #1a1a1a 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Glassmorphism Card Styles */
+.glassmorphism-card {
+  position: relative;
+  width: 400px;
+  height: 250px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  overflow: hidden;
+  padding: 20px;
+  color: white;
+  font-family: 'Josefin Sans', sans-serif;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.glassmorphism-card-3d {
+  position: relative;
+  width: 400px;
+  height: 250px;
+  border-radius: 20px;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transform: rotateY(-15deg) rotateX(5deg);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.glassmorphism-card-3d:hover {
+  transform: rotateY(-10deg) rotateX(3deg) translateZ(10px);
+}
+
+.glassmorphism-card-3d.top-card {
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ff6b6b 100%);
+  transform: rotateY(var(--card-rotate-y)) rotateX(var(--card-rotate-x)) rotateZ(var(--card-rotate-z)) translateZ(var(--card-translate-z));
+  z-index: 10;
+}
+
+.glassmorphism-card-3d.bottom-card {
+  background: linear-gradient(135deg, 
+    #60a5fa 0%, 
+    #3b82f6 15%, 
+    #8b5cf6 30%, 
+    #a855f7 45%, 
+    #7c3aed 60%, 
+    #6d28d9 75%, 
+    #5b21b6 85%, 
+    #4c1d95 100%
+  );
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transform: rotateY(var(--card-rotate-y)) rotateX(var(--card-rotate-x)) rotateZ(var(--card-rotate-z)) translateZ(0px) translateX(var(--card-translate-x)) translateY(var(--card-translate-y));
+  z-index: 5;
+  filter: brightness(1.2);
+}
+
+/* Enhanced 3D Card Effects */
+.glassmorphism-card-3d::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  pointer-events: none;
+  border-radius: 20px;
+}
+
+.glassmorphism-card-3d::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(0, 0, 0, 0.1) 100%);
+  pointer-events: none;
+  border-radius: 20px;
+}
+
+/* Card Container for 3D positioning */
+.card-3d-container {
+  position: relative;
+  width: 500px;
+  height: 300px;
+  transform-style: preserve-3d;
+  perspective: 1200px;
+  margin-top: -130px;
+  margin-left: 150px;
+}
+
+/* Central Rotation Variables - Edit these to change card rotation */
+:root {
+  --card-rotate-y: 25deg;
+  --card-rotate-x: -8deg;
+  --card-rotate-z: -370deg;
+  --card-translate-z: 1px;
+  --card-translate-x: 1px;
+  --card-translate-y: 150px;
+}
+
+.glassmorphism-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  pointer-events: none;
+}
+
+.card-logo {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 60px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.card-chip {
+  position: absolute;
+  top: 60px;
+  left: 20px;
+  width: 50px;
+  height: 40px;
+  background: linear-gradient(45deg, #ffd700, #ffed4e);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-chip::before {
+  content: '';
+  width: 30px;
+  height: 24px;
+  background: linear-gradient(45deg, #c0c0c0, #e0e0e0);
+  border-radius: 4px;
+}
+
+.card-number {
+  position: absolute;
+  bottom: 80px;
+  left: 20px;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: white;
+}
+
+.card-name {
+  position: absolute;
+  bottom: 50px;
+  left: 20px;
+  font-size: 16px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.card-date {
+  position: absolute;
+  bottom: 50px;
+  right: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.card-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Aadhaar Card Styles */
+.aadhar-header {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 10;
+}
+
+.aadhar-emblem {
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+}
+
+.aadhar-title {
+  font-size: 14px;
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.aadhar-logo {
+  font-size: 20px;
+  color: white;
+}
+
+.aadhar-photo-placeholder {
+  position: absolute;
+  top: 60px;
+  left: 20px;
+  width: 80px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dummy-profile-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  gap: 4px;
+}
+
+.profile-head {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  margin-bottom: 2px;
+}
+
+.profile-body {
+  width: 40px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 20px 20px 8px 8px;
+}
+
+.aadhar-info {
+  position: absolute;
+  top: 60px;
+  left: 120px;
+  right: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-bar {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+}
+
+.info-bar:nth-child(1) { width: 100%; }
+.info-bar:nth-child(2) { width: 80%; }
+.info-bar:nth-child(3) { width: 60%; }
+
+.aadhar-number {
+  position: absolute;
+  bottom: 40px;
+  left: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  letter-spacing: 2px;
+}
+
+.aadhar-qr {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.8) 0px,
+    rgba(255, 255, 255, 0.8) 2px,
+    transparent 2px,
+    transparent 4px
+  ),
+  repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.8) 0px,
+    rgba(255, 255, 255, 0.8) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  border-radius: 4px;
+}
+
+.aadhar-bottom-line {
+  position: absolute;
+  bottom: 15px;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: #ff4444;
+  border-radius: 1px;
+}
+
+/* Background Circles */
+.background-circles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(5px);
+}
+
+.circle-1 {
+  width: 300px;
+  height: 300px;
+  top: -150px;
+  right: -150px;
+  animation: float 6s ease-in-out infinite;
+}
+
+.circle-2 {
+  width: 200px;
+  height: 200px;
+  bottom: -100px;
+  left: -100px;
+  animation: float 8s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
