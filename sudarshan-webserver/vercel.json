@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/ocr-api/:path*",
+      "destination": "https://sudarshan-ocr-apiserver-12bx.onrender.com/:path*"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://sudarshan-blockchain.onrender.com/api/:path*"
+    }
+  ]
+}
