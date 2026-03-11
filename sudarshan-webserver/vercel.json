@@ -1,12 +1,17 @@
 {
-  "rewrites": [
+  "routes": [
     {
-      "source": "/ocr-api/:path*",
-      "destination": "https://sudarshan-ocr-apiserver-g3c5.onrender.com/:path*"
+      "src": "/ocr-api/(.*)",
+      "dest": "https://sudarshan-ocr-apiserver-g3c5.onrender.com/$1"
     },
     {
-      "source": "/api/:path*",
-      "destination": "https://sudarshan-blockchain-6p28.onrender.com/api/:path*"
+      "src": "/api/(.*)",
+      "dest": "https://sudarshan-blockchain-6p28.onrender.com/api/$1"
+    },
+    { "handle": "filesystem" },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
