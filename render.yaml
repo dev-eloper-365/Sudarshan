@@ -1,0 +1,25 @@
+services:
+  # ── OCR API (FastAPI + Tesseract + Poppler) ───────────────────────────────
+  - type: web
+    name: sudarshan-ocr-apiserver
+    runtime: docker
+    dockerfilePath: ./sudarshan-ocr-apiserver/Dockerfile
+    dockerContext: ./sudarshan-ocr-apiserver
+    plan: free
+    envVars:
+      - key: PORT
+        value: 8000
+
+  # ── Blockchain API (Node.js + MongoDB) ────────────────────────────────────
+  - type: web
+    name: sudarshan-blockchain
+    runtime: node
+    rootDir: sudarshan-blockchain
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: PORT
+        value: 6000
+      - key: MONGODB_URI
+        sync: false   # set manually in Render dashboard → Environment
