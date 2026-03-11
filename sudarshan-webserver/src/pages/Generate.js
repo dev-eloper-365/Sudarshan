@@ -1,12 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
-import { FaFileAlt, FaUser, FaCalendar, FaVenusMars, FaIdCard, FaCamera, FaDownload, FaArrowLeft, FaSpinner } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { FaFileAlt, FaUser, FaCalendar, FaVenusMars, FaIdCard, FaCamera, FaDownload, FaSpinner, FaCheckCircle } from 'react-icons/fa';
+
 
 async function addBlock(blockData) {
   try {
-    const response = await axios.post('https://sudarshan-blockchain.onrender.com/api/blockchain/add-block', blockData);
+    const response = await axios.post('/api/blockchain/add-block', blockData);
     console.log('Block added successfully:', response.data);
     return response.data;
   } catch (error) {
@@ -32,22 +31,15 @@ const Generate = () => {
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
     if (type === 'file') {
-      setFormData({
-        ...formData,
-        [name]: files[0]
-      });
+      setFormData({ ...formData, [name]: files[0] });
     } else {
-      setFormData({
-        ...formData,
-        [name]: value 
-      });
+      setFormData({ ...formData, [name]: value });
     }
   };
 
   const validateForm = () => {
     let valid = true;
     let newErrors = {};
-
     if (formData.aadhar) {
       const aadharNumber = formData.aadhar.replace(/\s+/g, '');
       if (aadharNumber.length < 12) {
@@ -58,7 +50,6 @@ const Generate = () => {
         valid = false;
       }
     }
-
     setErrors(newErrors);
     return valid;
   };
@@ -74,27 +65,16 @@ const Generate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
+    if (!validateForm()) return;
     setIsLoading(true);
 
     const voterID = generateVoterID(formData.aadhar);
-
-    // Add block to blockchain
-    const blockData = {
-      document_content: formData.aadhar.replace(/\s+/g, '')
-    };
-
+    const blockData = { document_content: formData.aadhar.replace(/\s+/g, '') };
     const blockchainResponse = await addBlock(blockData);
+    
     setBlockchainResult(blockchainResponse);
-
-    // Show the canvas and download button after submission
     setShowVoterID(true);
 
-    // Ensure the canvas is ready before drawing
     setTimeout(() => {
       if (canvasRef.current) {
         drawVoterIDCard(formData.name, formData.dob, formData.gender, voterID, formData.photo);
@@ -106,38 +86,27 @@ const Generate = () => {
 
   const drawVoterIDCard = (name, dob, gender, voterID, photo) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-
-    // Clear the canvas
+    if (!canvas) return; const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const cornerRadius = 15;
+    // Card Background
     ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.moveTo(cornerRadius, 0);
-    ctx.lineTo(canvas.width - cornerRadius, 0);
-    ctx.quadraticCurveTo(canvas.width, 0, canvas.width, cornerRadius);
-    ctx.lineTo(canvas.width, canvas.height - cornerRadius);
-    ctx.quadraticCurveTo(canvas.width, canvas.height, canvas.width - cornerRadius, canvas.height);
-    ctx.lineTo(cornerRadius, canvas.height);
-    ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - cornerRadius);
-    ctx.lineTo(0, cornerRadius);
-    ctx.quadraticCurveTo(0, 0, cornerRadius, 0);
-    ctx.closePath();
-    ctx.fill();
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Header Bar
+    ctx.fillStyle = '#003366';
+    ctx.fillRect(0, 0, canvas.width, 40);
 
-    ctx.strokeStyle = '#090909';
-    ctx.lineWidth = 2;
-    ctx.stroke();
+    ctx.strokeStyle = '#E0E5EC';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
     if (photo) {
       const img = new Image();
       img.onload = () => {
-        const photoWidth = canvas.width * 0.35;
-        const photoHeight = canvas.height * 0.7;
-        ctx.drawImage(img, 20, 50, photoWidth, photoHeight);
+        const photoWidth = canvas.width * 0.25;
+        const photoHeight = canvas.height * 0.55;
+        ctx.drawImage(img, 20, 60, photoWidth, photoHeight);
         drawText(name, dob, gender, voterID, photoWidth);
       };
       img.src = URL.createObjectURL(photo);
@@ -146,21 +115,25 @@ const Generate = () => {
     }
 
     function drawText(name, dob, gender, voterID, photoWidth) {
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 16px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('ELECTION COMMISSION OF INDIA', canvas.width / 2, 25);
+
       const textX = photoWidth + 40;
       ctx.fillStyle = '#000000';
-      ctx.font = 'bold 22px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('Voter ID Card', canvas.width / 2, 40);
-
-      ctx.font = '18px Arial';
+      ctx.font = '14px Arial';
       ctx.textAlign = 'left';
-      const lineHeight = 35;
+      const lineHeight = 25;
       const startY = 80;
 
-      ctx.fillText(`Name: ${name}`, textX, startY);
-      ctx.fillText(`DOB: ${dob}`, textX, startY + lineHeight);
-      ctx.fillText(`Gender: ${gender}`, textX, startY + 2 * lineHeight);
-      ctx.fillText(`Voter ID: ${voterID}`, textX, startY + 3 * lineHeight);
+      ctx.font = 'bold 14px Arial';
+      ctx.fillText(`EPIC NO: ${voterID}`, textX, startY);
+      
+      ctx.font = '14px Arial';
+      ctx.fillText(`Name: ${name}`, textX, startY + lineHeight);
+      ctx.fillText(`DOB: ${dob}`, textX, startY + 2 * lineHeight);
+      ctx.fillText(`Gender: ${gender}`, textX, startY + 3 * lineHeight);
     }
   };
 
@@ -174,257 +147,174 @@ const Generate = () => {
     }
   };
 
-  // Get the current date to limit the max date to year 2006 for 18+ rule
   const maxDate = new Date(2006, 11, 31).toISOString().split('T')[0];
 
   return (
-    <div className="min-h-screen royal-black-bg relative" style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+    <div className="w-full max-w-7xl mx-auto px-6 py-12">
       
-      {/* Header */}
-      <header className="relative z-10 flex items-center justify-between px-8 py-6 max-w-7xl mx-auto">
-        {/* Logo */}
-        <div className="flex items-center">
-          <div className="w-10 h-10 bg-gradient-to-r from-orange-400 to-pink-500 rounded-lg flex items-center justify-center mr-3 shadow-lg">
-            <FaFileAlt className="text-white text-lg" />
-          </div>
-          <span className="text-white text-2xl font-bold">Sudarshan</span>
-        </div>
+      <div className="mb-8 border-b pb-4">
+        <h1 className="text-3xl font-bold text-[#003366]">Document Generation Engine</h1>
+        <p className="text-gray-600 mt-2">Generate officially verifiable digital documents recorded on the Sudarshan blockchain.</p>
+      </div>
 
-        {/* Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
-          <Link to="/" className="text-white hover:text-orange-400 transition-colors font-medium">Home</Link>
-          <Link to="/upload" className="text-white hover:text-orange-400 transition-colors font-medium">Upload</Link>
-          <Link to="/generate" className="text-orange-400 font-medium">Generate</Link>
-          <Link to="/profile" className="text-white hover:text-orange-400 transition-colors font-medium">About us</Link>
-          <span className="text-white hover:text-orange-400 transition-colors cursor-pointer font-medium">Support</span>
-        </nav>
-
-        {/* Auth Buttons */}
-        <div className="flex items-center space-x-4">
-          <span className="text-white hover:text-orange-400 transition-colors cursor-pointer font-medium">Login</span>
-          <button className="bg-gradient-to-r from-pink-500 to-orange-500 text-white px-6 py-2.5 rounded-lg hover:shadow-lg transition-all duration-300 font-medium">
-            Sign up
-          </button>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <div className="relative z-10 flex flex-col lg:flex-row items-start justify-between px-8 py-12 pb-32 max-w-7xl mx-auto min-h-screen">
+      <div className="flex flex-col lg:flex-row gap-10">
         
         {/* Left Content - Generate Form */}
-        <motion.div 
-          className="lg:w-1/2 mb-12 lg:mb-0 lg:pr-12"
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="mb-8">
-            <Link to="/" className="inline-flex items-center text-orange-400 hover:text-orange-300 transition-colors mb-6">
-              <FaArrowLeft className="mr-2" />
-              Back to Home
-            </Link>
-            <h1 className="text-4xl lg:text-5xl font-black text-white mb-4 leading-tight">
-              Generate Voter ID
-            </h1>
-            <p className="text-xl text-gray-300 leading-relaxed">
-              Create your digital Voter ID card with blockchain verification and secure document generation.
-            </p>
-          </div>
-
-          {/* Generate Form */}
-          <motion.div 
-            className="glassmorphism-card bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 mb-8 min-h-fit"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <form onSubmit={handleSubmit} className="space-y-6 pb-4">
-              
-              {/* Name Input */}
+        <div className="lg:w-1/2">
+          <div className="official-card shadow-sm">
+            <div className="flex items-center space-x-2 mb-6 pb-3 border-b border-gray-100">
+              <FaIdCard className="text-[#FF9933] text-xl" />
+              <h2 className="text-xl font-bold text-[#333333]">Voter ID Generation</h2>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-white text-sm font-semibold mb-3 flex items-center">
-                  <FaUser className="mr-2 text-orange-400" />
-                  Full Name
+                <label className="block text-gray-700 text-sm font-semibold mb-2 flex items-center">
+                  <FaUser className="mr-2 text-gray-400" /> Full Name
                 </label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Enter your full name"
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent backdrop-blur-sm"
+                  placeholder="As per official records"
+                  className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[#003366] focus:border-[#003366]"
                   required
                 />
               </div>
 
-              {/* Date of Birth */}
-              <div>
-                <label className="block text-white text-sm font-semibold mb-3 flex items-center">
-                  <FaCalendar className="mr-2 text-orange-400" />
-                  Date of Birth
-                </label>
-                <input
-                  type="date"
-                  name="dob"
-                  value={formData.dob}
-                  onChange={handleChange}
-                  max={maxDate}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent backdrop-blur-sm"
-                  required
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 text-sm font-semibold mb-2 flex items-center">
+                    <FaCalendar className="mr-2 text-gray-400" /> Date of Birth
+                  </label>
+                  <input
+                    type="date"
+                    name="dob"
+                    value={formData.dob}
+                    onChange={handleChange}
+                    max={maxDate}
+                    className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[#003366] focus:border-[#003366]"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 text-sm font-semibold mb-2 flex items-center">
+                    <FaVenusMars className="mr-2 text-gray-400" /> Gender
+                  </label>
+                  <select
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[#003366] focus:border-[#003366]"
+                    required
+                  >
+                    <option value="" disabled>Select</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
               </div>
 
-              {/* Gender Selection */}
               <div>
-                <label className="block text-white text-sm font-semibold mb-3 flex items-center">
-                  <FaVenusMars className="mr-2 text-orange-400" />
-                  Gender
-                </label>
-                <select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent backdrop-blur-sm"
-                  required
-                >
-                  <option value="" disabled className="bg-gray-800">Select Gender</option>
-                  <option value="male" className="bg-gray-800">Male</option>
-                  <option value="female" className="bg-gray-800">Female</option>
-                  <option value="other" className="bg-gray-800">Other</option>
-                </select>
-              </div>
-
-              {/* Aadhar Number */}
-              <div>
-                <label className="block text-white text-sm font-semibold mb-3 flex items-center">
-                  <FaIdCard className="mr-2 text-orange-400" />
-                  Aadhar Number
+                <label className="block text-gray-700 text-sm font-semibold mb-2 flex items-center">
+                  <FaIdCard className="mr-2 text-gray-400" /> Aadhaar Number
                 </label>
                 <input
                   type="text"
                   name="aadhar"
                   value={formData.aadhar}
                   onChange={handleChange}
-                  placeholder="Enter 12-digit Aadhar number"
+                  placeholder="Enter 12-digit Aadhaar"
                   maxLength="12"
-                  className={`w-full px-4 py-3 bg-white/10 border rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent backdrop-blur-sm ${
-                    errors.aadhar ? 'border-red-400' : 'border-white/20'
+                  className={`w-full px-4 py-2 bg-gray-50 border rounded focus:outline-none focus:ring-1 focus:ring-[#003366] focus:border-[#003366] ${
+                    errors.aadhar ? 'border-red-500' : 'border-gray-300'
                   }`}
                   required
                 />
-                {errors.aadhar && (
-                  <p className="text-red-300 text-sm mt-2 flex items-center">
-                    <span className="w-2 h-2 bg-red-400 rounded-full mr-2"></span>
-                    {errors.aadhar}
-                  </p>
-                )}
+                {errors.aadhar && <p className="text-red-500 text-xs mt-1">{errors.aadhar}</p>}
               </div>
 
-              {/* Photo Upload */}
               <div>
-                <label className="block text-white text-sm font-semibold mb-3 flex items-center">
-                  <FaCamera className="mr-2 text-orange-400" />
-                  Upload Photo
+                <label className="block text-gray-700 text-sm font-semibold mb-2 flex items-center">
+                  <FaCamera className="mr-2 text-gray-400" /> Passport Photo
                 </label>
                 <input
                   type="file"
                   name="photo"
                   accept="image/*"
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent backdrop-blur-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-400 file:text-white hover:file:bg-orange-500"
+                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded text-sm text-gray-600 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#E0E5EC] file:text-[#003366] hover:file:bg-gray-300"
                 />
               </div>
 
-              {/* Submit Button */}
-              <button 
-                type="submit" 
-                disabled={isLoading}
-                className="w-full bg-gradient-to-r from-pink-500 to-orange-500 text-white py-4 rounded-lg font-semibold hover:shadow-xl transition-all duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? (
-                  <>
-                    <FaSpinner className="animate-spin mr-3" />
-                    Generating...
-                  </>
-                ) : (
-                  <>
-                    <FaFileAlt className="mr-3" />
-                    Generate Voter ID
-                  </>
-                )}
-              </button>
+              <div className="pt-4 border-t border-gray-100">
+                <button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="w-full btn-official flex items-center justify-center py-3"
+                >
+                  {isLoading ? (
+                    <><FaSpinner className="animate-spin mr-2" /> Processing Request...</>
+                  ) : (
+                    <><FaFileAlt className="mr-2" /> Generate Verified Document</>
+                  )}
+                </button>
+              </div>
             </form>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* Right Content - Results Display */}
-        <motion.div 
-          className="lg:w-1/2 lg:pl-12"
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          {/* Generated Voter ID */}
-          {showVoterID && (
-            <motion.div 
-              className="glassmorphism-card bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 mb-6"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
-                <FaFileAlt className="mr-3 text-orange-400" />
-                Generated Voter ID
-              </h3>
-              <div className="flex justify-center mb-6">
-                <canvas ref={canvasRef} width="400" height="250" className="rounded-lg shadow-lg"></canvas>
-              </div>
-              <button 
-                onClick={downloadImage}
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-lg font-semibold hover:shadow-xl transition-all duration-300 flex items-center justify-center"
-              >
-                <FaDownload className="mr-3" />
-                Download Voter ID
-              </button>
-            </motion.div>
-          )}
-
-          {/* Blockchain Verification */}
-          {blockchainResult && (
-            <motion.div 
-              className="glassmorphism-card bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 mb-6"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
-                <FaIdCard className="mr-3 text-green-400" />
-                Blockchain Verification
-              </h3>
-              <div className="bg-black/20 rounded-lg p-4 border border-white/10">
-                <pre className="text-green-300 text-sm overflow-x-auto">
-                  {JSON.stringify(blockchainResult, null, 2)}
-                </pre>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Empty State */}
+        <div className="lg:w-1/2">
+          
           {!showVoterID && !blockchainResult && (
-            <motion.div 
-              className="glassmorphism-card bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 text-center"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <FaFileAlt className="text-4xl text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">Ready to Generate</h3>
-              <p className="text-gray-300">
-                Fill in your details to generate a secure Voter ID card with blockchain verification.
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-10 text-center h-full flex flex-col justify-center items-center">
+              <FaCheckCircle className="text-5xl text-gray-300 mb-4" />
+              <h3 className="text-xl font-bold text-gray-600 mb-2">Awaiting Generation</h3>
+              <p className="text-sm text-gray-500 max-w-sm">
+                Submit the required details on the left to generate cryptographic proof and visual representation of the document.
               </p>
-            </motion.div>
+            </div>
           )}
-        </motion.div>
+
+          <div className="space-y-6">
+            {showVoterID && (
+              <div className="official-card bg-[#F8F9FA] shadow-sm border border-[#E0E5EC]">
+                <h3 className="text-sm font-bold text-[#003366] mb-4 uppercase tracking-wider flex items-center">
+                  <FaFileAlt className="mr-2 text-[#138808]" /> Digital Document
+                </h3>
+                <div className="flex justify-center bg-white p-4 border rounded shadow-inner mb-4">
+                  <canvas ref={canvasRef} width="400" height="250" className="w-full max-w-md h-auto border"></canvas>
+                </div>
+                <button 
+                  onClick={downloadImage}
+                  className="w-full bg-[#138808] text-white py-2 rounded font-medium hover:bg-green-700 transition duration-200 flex items-center justify-center"
+                >
+                  <FaDownload className="mr-2" /> Download Copy
+                </button>
+              </div>
+            )}
+
+            {blockchainResult && (
+              <div className="official-card shadow-sm border border-[#E0E5EC]">
+                <h3 className="text-sm font-bold text-[#003366] mb-4 uppercase tracking-wider flex items-center">
+                  <FaIdCard className="mr-2 text-[#FF9933]" /> Blockchain Receipt
+                </h3>
+                <div className="bg-gray-900 rounded p-4 shadow-inner">
+                  <pre className="text-green-400 text-xs overflow-x-auto whitespace-pre-wrap font-mono">
+                    {JSON.stringify(blockchainResult, null, 2)}
+                  </pre>
+                </div>
+                <div className="mt-3 text-xs text-gray-500 flex items-center">
+                  <FaCheckCircle className="text-green-500 mr-1" /> Verified on Sudarshan Ledger
+                </div>
+              </div>
+            )}
+          </div>
+          
+        </div>
       </div>
     </div>
   );

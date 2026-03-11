@@ -10,6 +10,19 @@ import traceback
 from app.utils.image_processing import process_aadhaar_image
 from app.utils.pan_processing import process_pan_image
 
+def _pdf_to_image_path(pdf_path: str) -> str:
+    """Convert the first page of a PDF to a PNG and return the new temp path."""
+    try:
+        from pdf2image import convert_from_path
+    except ImportError:
+        raise HTTPException(status_code=500, detail="pdf2image is not installed. Run: pip install pdf2image")
+    pages = convert_from_path(pdf_path, dpi=200, first_page=1, last_page=1)
+    if not pages:
+        raise HTTPException(status_code=400, detail="Could not extract any page from the PDF")
+    img_path = pdf_path + "_page1.png"
+    pages[0].save(img_path, "PNG")
+    return img_path
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -88,8 +101,9 @@ async def extract_details(file: UploadFile = File(...)):
         logger.info(f"Processing file: {file.filename}, content_type: {file.content_type}")
         
         # Validate file type
-        if not file.content_type or not file.content_type.startswith('image/'):
-            raise HTTPException(status_code=400, detail="File must be an image")
+        allowed_types = ('image/', 'application/pdf')
+        if not file.content_type or not any(file.content_type.startswith(t) for t in allowed_types):
+            raise HTTPException(status_code=400, detail="File must be an image or PDF")
         
         # Use system temp directory (always writable)
         temp_dir = tempfile.gettempdir()
@@ -117,9 +131,15 @@ async def extract_details(file: UploadFile = File(...)):
         if file_size == 0:
             raise Exception("Uploaded file is empty")
 
+        # Convert PDF to image if needed
+        process_path = temp_file_path
+        if file.content_type == 'application/pdf':
+            logger.info("PDF detected, converting first page to image...")
+            process_path = _pdf_to_image_path(temp_file_path)
+
         # Process the image
         logger.info("Starting image processing...")
-        result = process_aadhaar_image(temp_file_path)
+        result = process_aadhaar_image(process_path)
         logger.info(f"Processing completed successfully")
 
         # Return response with explicit CORS headers
@@ -146,13 +166,19 @@ async def extract_details(file: UploadFile = File(...)):
         return error_response
         
     finally:
-        # Clean up temporary file
+        # Clean up temporary files
         if temp_file_path and os.path.exists(temp_file_path):
             try:
                 os.remove(temp_file_path)
                 logger.info(f"Cleaned up temp file: {temp_file_path}")
             except Exception as cleanup_error:
                 logger.warning(f"Failed to cleanup temp file: {cleanup_error}")
+        converted_path = temp_file_path + "_page1.png" if temp_file_path else None
+        if converted_path and os.path.exists(converted_path):
+            try:
+                os.remove(converted_path)
+            except Exception:
+                pass
 
 @app.post("/extract-pan-details/")
 async def extract_pan_details(file: UploadFile = File(...)):
@@ -164,8 +190,9 @@ async def extract_pan_details(file: UploadFile = File(...)):
         logger.info(f"Processing PAN file: {file.filename}")
         
         # Validate file type
-        if not file.content_type or not file.content_type.startswith('image/'):
-            raise HTTPException(status_code=400, detail="File must be an image")
+        allowed_types = ('image/', 'application/pdf')
+        if not file.content_type or not any(file.content_type.startswith(t) for t in allowed_types):
+            raise HTTPException(status_code=400, detail="File must be an image or PDF")
         
         # Use system temp directory
         temp_dir = tempfile.gettempdir()
@@ -180,8 +207,14 @@ async def extract_pan_details(file: UploadFile = File(...)):
             content = await file.read()
             buffer.write(content)
 
+        # Convert PDF to image if needed
+        process_path = temp_file_path
+        if file.content_type == 'application/pdf':
+            logger.info("PDF detected, converting first page to image...")
+            process_path = _pdf_to_image_path(temp_file_path)
+
         # Process the PAN card image
-        result = process_pan_image(temp_file_path)
+        result = process_pan_image(process_path)
 
         # Return response with explicit CORS headers
         response = JSONResponse(content=result)
@@ -205,14 +238,20 @@ async def extract_pan_details(file: UploadFile = File(...)):
         )
         error_response.headers["Access-Control-Allow-Origin"] = "*"
         return error_response
-        
+
     finally:
-        # Clean up temporary file
+        # Clean up temporary files
         if temp_file_path and os.path.exists(temp_file_path):
             try:
                 os.remove(temp_file_path)
             except Exception as cleanup_error:
                 logger.warning(f"Failed to cleanup temp file: {cleanup_error}")
+        converted_path = temp_file_path + "_page1.png" if temp_file_path else None
+        if converted_path and os.path.exists(converted_path):
+            try:
+                os.remove(converted_path)
+            except Exception:
+                pass
 
 @app.get("/test-cors")
 def test_cors():

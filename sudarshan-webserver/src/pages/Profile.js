@@ -1,66 +1,115 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { FaFileAlt } from 'react-icons/fa';
+import { FaUserCircle, FaEnvelope, FaRegAddressCard, FaPhone, FaCheckCircle } from 'react-icons/fa';
 
 const Profile = () => {
-  // Sample user data (replace with dynamic data as needed)
   const user = {
-    name: 'Admin',
-    email: 'xyz@example.com',
-    profilePicture: 'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg', // Replace with actual profile picture URL
+    name: 'Admin User',
+    email: 'admin@sudarshan.gov.in',
+    department: 'Ministry of Authorization',
+    employeeId: 'EMP-90214-IN',
+    phone: '+91 98765 43210',
+    profilePicture: 'https://ui-avatars.com/api/?name=Admin+User&background=003366&color=fff&size=200',
   };
 
   return (
-    <div className="min-h-screen royal-black-bg relative overflow-hidden" style={{ fontFamily: 'Gilroy, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+    <div className="w-full max-w-7xl mx-auto px-6 py-12">
       
-      {/* Header */}
-      <header className="relative z-10 flex items-center justify-between px-8 py-6 max-w-7xl mx-auto">
-        {/* Logo */}
-        <div className="flex items-center">
-          <div className="w-10 h-10 bg-gradient-to-r from-orange-400 to-pink-500 rounded-lg flex items-center justify-center mr-3 shadow-lg">
-            <FaFileAlt className="text-white text-lg" />
-          </div>
-          <span className="text-white text-2xl font-bold">Sudarshan</span>
-        </div>
-
-        {/* Navigation */}
-        <nav className="hidden md:flex items-center space-x-12 absolute left-1/2 transform -translate-x-1/2">
-          <Link to="/" className="text-gray-300 hover:text-gray-100 transition-colors font-medium no-underline">Home</Link>
-          <Link to="/generate" className="text-gray-300 hover:text-gray-100 transition-colors font-medium no-underline">Generate</Link>
-          <Link to="/verify" className="text-gray-300 hover:text-gray-100 transition-colors font-medium no-underline">Verify</Link>
-          <Link to="/profile" className="text-gray-300 hover:text-gray-100 transition-colors font-medium no-underline">Profile</Link>
-        </nav>
-      </header>
-
-      <div className="relative z-10 py-12 px-4">
-      <div className="container mx-auto max-w-3xl bg-white p-8 rounded-lg shadow-none">
-        <div className="flex justify-center mb-6">
-          <motion.img
-            src={user.profilePicture}
-            alt="Profile"
-            className="w-32 h-32 rounded-full border-4 border-blue-500"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.6 }}
-          />
-        </div>
-        <h1 className="text-3xl font-semibold text-center mb-4">{user.name}</h1>
-        <p className="text-center text-gray-600 mb-4">{user.email}</p>
-
-        {/* Profile Details Section */}
-        <div className="bg-gray-50 p-6 rounded-lg shadow-none">
-          <h2 className="text-xl font-semibold mb-4">Profile Details</h2>
-          <p className="mb-2"><span className="font-semibold">Name:</span> {user.name}</p>
-          <p className="mb-2"><span className="font-semibold">Email:</span> {user.email}</p>
-          {/* Add more user details as needed */}
-        </div>
-
-        {/* Edit Profile Button */}
-        <div className="mt-6 text-center">
-          <button className="text-blue-500 hover:underline bg-transparent border-none cursor-pointer">Edit Profile</button>
-        </div>
+      <div className="mb-8 border-b pb-4">
+        <h1 className="text-3xl font-bold text-[#003366]">User Profile</h1>
+        <p className="text-gray-600 mt-2">Manage your official portal credentials and personal details.</p>
       </div>
+
+      <div className="flex flex-col lg:flex-row gap-8">
+        
+        {/* Left Sidebar - Profile Summary */}
+        <div className="lg:w-1/3">
+          <div className="official-card shadow-sm text-center">
+            <div className="relative inline-block mb-4">
+              <img
+                src={user.profilePicture}
+                alt="Profile"
+                className="w-32 h-32 rounded-full border-4 border-gray-100 shadow-sm mx-auto object-cover"
+              />
+              <div className="absolute bottom-1 right-1 bg-[#138808] w-6 h-6 rounded-full border-2 border-white flex items-center justify-center" title="Verified Account">
+                <FaCheckCircle className="text-white text-xs" />
+              </div>
+            </div>
+            
+            <h2 className="text-2xl font-bold text-[#333333] mb-1">{user.name}</h2>
+            <p className="text-[#003366] font-medium text-sm mb-4">{user.department}</p>
+            
+            <div className="bg-gray-50 rounded p-3 mb-6 inline-block w-full">
+              <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">Employee ID</p>
+              <p className="font-mono font-bold text-gray-800">{user.employeeId}</p>
+            </div>
+            
+            <button className="w-full btn-official-outline text-sm py-2">
+              Update Photo
+            </button>
+          </div>
+        </div>
+
+        {/* Right Content - Profile Details */}
+        <div className="lg:w-2/3">
+          <div className="official-card shadow-sm h-full">
+            <h3 className="text-lg font-bold text-[#003366] mb-6 pb-2 border-b flex items-center">
+              <FaRegAddressCard className="mr-2" /> Official Information
+            </h3>
+            
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs text-gray-500 uppercase font-semibold mb-1 flex items-center">
+                    <FaUserCircle className="mr-1" /> Full Name
+                  </label>
+                  <div className="text-gray-800 font-medium py-2 px-3 bg-gray-50 border border-gray-200 rounded">
+                    {user.name}
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-xs text-gray-500 uppercase font-semibold mb-1 flex items-center">
+                    <FaEnvelope className="mr-1" /> Official Email
+                  </label>
+                  <div className="text-gray-800 font-medium py-2 px-3 bg-gray-50 border border-gray-200 rounded flex items-center justify-between">
+                    {user.email}
+                    <span className="text-[10px] bg-green-100 text-green-800 px-2 py-0.5 rounded uppercase font-bold">Verified</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs text-gray-500 uppercase font-semibold mb-1 flex items-center">
+                    <FaPhone className="mr-1" /> Contact Number
+                  </label>
+                  <div className="text-gray-800 font-medium py-2 px-3 bg-gray-50 border border-gray-200 rounded">
+                    {user.phone}
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-xs text-gray-500 uppercase font-semibold mb-1">
+                    Department
+                  </label>
+                  <div className="text-gray-800 font-medium py-2 px-3 bg-gray-50 border border-gray-200 rounded">
+                    {user.department}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-10 pt-6 border-t border-gray-200 flex justify-end space-x-4">
+              <button className="btn-official-outline">
+                Change Password
+              </button>
+              <button className="btn-official">
+                Edit Details
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

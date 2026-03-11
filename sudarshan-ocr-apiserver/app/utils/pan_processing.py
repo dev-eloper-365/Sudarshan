@@ -33,6 +33,14 @@ def process_pan_image(img_path):
     """
     # Read and preprocess the image
     img = cv2.imread(img_path)
+    
+    if img is None:
+        try:
+            pil_img = Image.open(img_path).convert('RGB')
+            img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
+        except Exception as e:
+            raise ValueError(f"Could not read image file. Ensure it is a valid image format. ({str(e)})")
+
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     h, w, c = img.shape

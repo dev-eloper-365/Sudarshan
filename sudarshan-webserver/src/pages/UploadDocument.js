@@ -1,22 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { FaUpload, FaFileAlt, FaCheckCircle, FaSpinner, FaArrowLeft } from 'react-icons/fa';
+import { FaUpload, FaFileAlt, FaCheckCircle, FaSpinner, FaIdCard, FaExclamationCircle, FaShieldAlt } from 'react-icons/fa';
 
 async function addBlock(blockData) {
   try {
-    console.log('Sending blockData:', blockData);
-    
     const response = await axios.post(
-      'https://sudarshan-blockchain.onrender.com/api/blockchain/add-block',
+      '/api/blockchain/verify-data',
       blockData,
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
+      { headers: { 'Content-Type': 'application/json' } }
     );
-    console.log('Block added successfully:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error adding block:', error.message);
@@ -24,18 +16,14 @@ async function addBlock(blockData) {
   }
 }
 
-async function callFastApi(documentFile) {
+async function callFastApi(documentFile, documentType) {
   const formData = new FormData();
   formData.append('file', documentFile);
-
+  const endpoint = documentType === 'pan'
+    ? '/ocr-api/extract-pan-details/'
+    : '/ocr-api/extract-details/';
   try {
-    const response = await axios.post('https://sudarshan-ocr-apiserver-12bx.onrender.com/extract-details/', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-
-    console.log('Extracted details:', response.data);
+    const response = await axios.post(endpoint, formData);
     return response.data;
   } catch (error) {
     console.error('Error calling the FastAPI:', error.response ? error.response.data : error.message);
@@ -44,7 +32,7 @@ async function callFastApi(documentFile) {
 }
 
 const UploadDocument = () => {
-  const [documentType, setDocumentType] = useState('');
+  const [documentType, setDocumentType] = useState('aadhar');
   const [documentFile, setDocumentFile] = useState(null);
   const [message, setMessage] = useState('');
   const [result, setResult] = useState(null);
@@ -73,7 +61,6 @@ const UploadDocument = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!documentFile) {
       setMessage('Please select a file before submitting');
       return;
@@ -81,10 +68,11 @@ const UploadDocument = () => {
 
     setIsLoading(true);
     setMessage('');
+    setResult(null);
+    setApiResponse(null);
 
     try {
-      const extractedData = await callFastApi(documentFile);
-      
+      const extractedData = await callFastApi(documentFile, documentType);
       if (!extractedData) {
         setMessage('Error extracting data from the document');
         setIsLoading(false);
@@ -92,195 +80,216 @@ const UploadDocument = () => {
       }
 
       setResult(extractedData);
-      extractedData.aadhaar_number = extractedData.aadhaar_number.replace(/\s+/g, '');
+      const documentNumber = documentType === 'pan'
+        ? (extractedData.pan_number || '').replace(/\s+/g, '')
+        : (extractedData.aadhaar_number || '').replace(/\s+/g, '');
       
       const blockData = {
-        document_content: extractedData.aadhaar_number
+        document_content: documentNumber
       };
 
       const apiResult = await addBlock(blockData);
       setApiResponse(apiResult);
-      setMessage('Document processed successfully!');
+      if(apiResult === "Document is Invalid") {
+        setMessage('Verification Failed: Document is Invalid');
+      } else {
+        setMessage('Document successfully verified against the Sudarshan Ledger.');
+      }
     } catch (err) {
       console.error('Error processing document:', err);
-      setMessage('Error processing document');
+      setMessage('An error occurred during verification.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen royal-black-bg relative overflow-hidden" style={{ fontFamily: 'Gilroy, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
-      
-      {/* Header */}
-      <header className="relative z-10 flex items-center justify-between px-8 py-6 max-w-7xl mx-auto">
-        {/* Logo */}
-        <div className="flex items-center">
-          <div className="w-10 h-10 bg-gradient-to-r from-orange-400 to-pink-500 rounded-lg flex items-center justify-center mr-3 shadow-lg">
-            <FaFileAlt className="text-white text-lg" />
-          </div>
-          <span className="text-white text-2xl font-bold">Sudarshan</span>
-        </div>
+    <div className="w-full max-w-7xl mx-auto px-6 py-12">
+      <div className="mb-8 border-b pb-4">
+        <h1 className="text-3xl font-bold text-[#003366]">Document Verification Portal</h1>
+        <p className="text-gray-600 mt-2">Upload official documents to verify their authenticity against the national blockchain ledger.</p>
+      </div>
 
-        {/* Navigation */}
-        <nav className="hidden md:flex items-center space-x-12 absolute left-1/2 transform -translate-x-1/2">
-          <Link to="/" className="text-gray-300 hover:text-gray-100 transition-colors font-medium no-underline">Home</Link>
-          <Link to="/generate" className="text-gray-300 hover:text-gray-100 transition-colors font-medium no-underline">Generate</Link>
-          <Link to="/verify" className="text-gray-300 hover:text-gray-100 transition-colors font-medium no-underline">Verify</Link>
-          <Link to="/profile" className="text-gray-300 hover:text-gray-100 transition-colors font-medium no-underline">Profile</Link>
-        </nav>
-      </header>
-
-      {/* Main Content Container with proper spacing */}
-      <div className="relative z-10 px-8 pb-20 max-w-7xl mx-auto">
-        <div className="flex flex-col lg:flex-row items-start justify-between py-8 gap-12 min-h-[calc(100vh-200px)]">
-          
-          {/* Left Content - Upload Form */}
-          <div className="lg:w-1/2 w-full">
-            <div className="mb-8">
-              <Link to="/" className="inline-flex items-center text-orange-400 hover:text-orange-300 transition-colors mb-6">
-                <FaArrowLeft className="mr-2" />
-                Back to Home
-              </Link>
-              <h1 className="text-4xl lg:text-5xl font-black text-white mb-4 leading-tight">
-                Document Verification
-              </h1>
-              <p className="text-xl text-gray-300 leading-relaxed">
-                Upload your documents securely and get them verified using our advanced blockchain technology.
-              </p>
+      <div className="flex flex-col lg:flex-row gap-10">
+        
+        {/* Left Content - Upload Form */}
+        <div className="lg:w-1/2">
+          <div className="official-card shadow-sm">
+            <div className="flex items-center space-x-2 mb-6 pb-3 border-b border-gray-100">
+              <FaIdCard className="text-[#003366] text-xl" />
+              <h2 className="text-xl font-bold text-[#333333]">Upload for Verification</h2>
             </div>
 
-            {/* Upload Form */}
-            <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8">
-              <div className="space-y-6">
-                
-                {/* Document Type Selection */}
-                <div>
-                  <label className="block text-white text-sm font-semibold mb-3">
-                    Document Type
-                  </label>
-                  <select
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent backdrop-blur-sm"
-                    value={documentType}
-                    onChange={(e) => setDocumentType(e.target.value)}
+            <div className="space-y-6">
+              
+              {/* Document Type Selection */}
+              <div>
+                <label className="block text-gray-700 text-sm font-semibold mb-2">
+                  Document Type
+                </label>
+                <select
+                  className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[#003366]"
+                  value={documentType}
+                  onChange={(e) => setDocumentType(e.target.value)}
+                  required
+                >
+                  <option value="aadhar">Aadhaar Card</option>
+                  <option value="pan">PAN Card</option>
+                  <option value="driving">Driving License</option>
+                </select>
+              </div>
+
+              {/* File Upload Area */}
+              <div>
+                <label className="block text-gray-700 text-sm font-semibold mb-2">
+                  Upload Scanned Document
+                </label>
+                <div
+                  className={`relative border-2 border-dashed rounded bg-gray-50 p-8 text-center transition-all duration-200 ${
+                    dragActive 
+                      ? 'border-[#003366] bg-blue-50' 
+                      : 'border-gray-300 hover:border-[#003366]'
+                  }`}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                >
+                  <input
+                    type="file"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    onChange={(e) => setDocumentFile(e.target.files[0])}
+                    accept="image/*,.pdf"
                     required
-                  >
-                    <option value="" disabled className="bg-gray-800 text-gray-300">Select Document Type</option>
-                    <option value="aadhar" className="bg-gray-800 text-white">Aadhar Card</option>
-                    <option value="pan" className="bg-gray-800 text-white">PAN Card</option>
-                    <option value="driving" className="bg-gray-800 text-white">Driving License</option>
-                  </select>
+                  />
+                  
+                  {documentFile ? (
+                    <div className="flex flex-col items-center space-y-2">
+                      <FaFileAlt className="text-[#003366] text-3xl" />
+                      <p className="text-gray-800 font-medium">{documentFile.name}</p>
+                      <p className="text-gray-500 text-xs text-center border-t pt-2 mt-2 w-full">Click to change file</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center space-y-2">
+                      <FaUpload className="text-gray-400 text-3xl" />
+                      <p className="text-gray-600 font-medium">Drag & drop your document here</p>
+                      <p className="text-gray-400 text-sm">or click to browse from device</p>
+                      <p className="text-xs text-gray-400 mt-2">Accepted formats: JPG, PNG, PDF</p>
+                    </div>
+                  )}
                 </div>
+              </div>
 
-                {/* File Upload Area */}
-                <div>
-                  <label className="block text-white text-sm font-semibold mb-3">
-                    Upload Document
-                  </label>
-                  <div
-                    className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-300 ${
-                      dragActive 
-                        ? 'border-orange-400 bg-orange-400/10' 
-                        : 'border-white/30 hover:border-orange-400/50'
-                    }`}
-                    onDragEnter={handleDrag}
-                    onDragLeave={handleDrag}
-                    onDragOver={handleDrag}
-                    onDrop={handleDrop}
-                  >
-                    <input
-                      type="file"
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      onChange={(e) => setDocumentFile(e.target.files[0])}
-                      accept="image/*,.pdf"
-                      required
-                    />
-                    
-                    {documentFile ? (
-                      <div className="space-y-3">
-                        <FaCheckCircle className="text-green-400 text-3xl mx-auto" />
-                        <p className="text-white font-medium">{documentFile.name}</p>
-                        <p className="text-gray-300 text-sm">Click to change file</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        <FaUpload className="text-gray-400 text-3xl mx-auto" />
-                        <p className="text-white font-medium">Drag & drop your document here</p>
-                        <p className="text-gray-300 text-sm">or click to browse files</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Submit Button */}
+              <div className="pt-4 border-t border-gray-100">
                 <button
-                  type="button"
                   onClick={handleSubmit}
                   disabled={isLoading || !documentFile}
-                  className={`w-full py-4 px-6 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center space-x-2 ${
+                  className={`w-full py-3 rounded font-medium transition-colors flex items-center justify-center ${
                     isLoading || !documentFile
-                      ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-pink-500 to-orange-500 text-white hover:shadow-lg hover:scale-105'
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'btn-official'
                   }`}
                 >
                   {isLoading ? (
-                    <>
-                      <FaSpinner className="animate-spin" />
-                      <span>Processing...</span>
-                    </>
+                    <><FaSpinner className="animate-spin mr-2" /> Processing & Verifying...</>
                   ) : (
-                    <>
-                      <FaCheckCircle />
-                      <span>Verify Document</span>
-                    </>
+                    <><FaCheckCircle className="mr-2" /> Initiate Verification</>
                   )}
                 </button>
-
-                {/* Message Display */}
-                {message && (
-                  <div className={`p-4 rounded-lg text-center ${
-                    message.includes('Error') || message.includes('Error')
-                      ? 'bg-red-500/20 text-red-300 border border-red-500/30'
-                      : 'bg-green-500/20 text-green-300 border border-green-500/30'
-                  }`}>
-                    {message}
-                  </div>
-                )}
               </div>
+
+              {/* Message Display */}
+              {message && (
+                <div className={`p-3 rounded text-sm flex items-start ${
+                  message.includes('Error') || message.includes('Failed') || message.includes('Invalid')
+                    ? 'bg-red-50 text-red-700 border border-red-200'
+                    : 'bg-green-50 text-green-700 border border-green-200'
+                }`}>
+                  {message.includes('Error') || message.includes('Failed') || message.includes('Invalid') ? (
+                    <FaExclamationCircle className="mt-0.5 mr-2 flex-shrink-0" />
+                  ) : (
+                    <FaCheckCircle className="mt-0.5 mr-2 flex-shrink-0" />
+                  )}
+                  <span>{message}</span>
+                </div>
+              )}
             </div>
           </div>
+        </div>
 
-          {/* Right Content - Results Display */}
-          <div className="lg:w-1/2 w-full">
-            {(result || apiResponse) && (
-              <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8">
-                <h2 className="text-2xl font-bold text-white mb-6">Verification Results</h2>
-                
-                {result && (
-                  <div className="space-y-4 mb-6">
-                    <h3 className="text-lg font-semibold text-orange-400">Extracted Information</h3>
-                    <div className="space-y-2 text-gray-300">
-                      <p><span className="text-white font-medium">Name:</span> {result.name}</p>
-                      <p><span className="text-white font-medium">Aadhaar Number:</span> {result.aadhaar_number}</p>
-                      <p><span className="text-white font-medium">Date of Birth:</span> {result.date_of_birth}</p>
-                      <p><span className="text-white font-medium">Gender:</span> {result.gender}</p>
+        {/* Right Content - Results Display */}
+        <div className="lg:w-1/2">
+          {!result && !apiResponse && !isLoading && (
+            <div className="bg-gray-50 border border-gray-200 rounded p-10 text-center h-full flex flex-col justify-center items-center">
+              <FaShieldAlt className="text-5xl text-gray-300 mb-4" />
+              <h3 className="text-lg font-bold text-gray-600 mb-2">Awaiting Document</h3>
+              <p className="text-sm text-gray-500 max-w-sm">
+                Upload a document to initiate OCR extraction and cryptographic verification on the blockchain.
+              </p>
+            </div>
+          )}
+
+          {(result || apiResponse) && (
+            <div className="space-y-6">
+              
+              {result && (
+                <div className="official-card shadow-sm border border-[#E0E5EC]">
+                  <h3 className="text-sm font-bold text-[#003366] mb-4 uppercase tracking-wider border-b pb-2">
+                    Extracted Information
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mt-3">
+                    <div>
+                      <span className="text-gray-500 uppercase text-xs font-semibold block mb-1">Name</span>
+                      <span className="text-gray-800 font-medium">{result.name || 'N/A'}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500 uppercase text-xs font-semibold block mb-1">Aadhaar Number</span>
+                      <span className="text-gray-800 font-medium">{result.aadhaar_number || 'N/A'}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500 uppercase text-xs font-semibold block mb-1">Date of Birth</span>
+                      <span className="text-gray-800 font-medium">{result.date_of_birth || 'N/A'}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500 uppercase text-xs font-semibold block mb-1">Gender</span>
+                      <span className="text-gray-800 font-medium">{result.gender || 'N/A'}</span>
                     </div>
                   </div>
-                )}
+                </div>
+              )}
 
-                {apiResponse && (
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-orange-400">Blockchain Status</h3>
-                    <div className="bg-gray-800/50 p-4 rounded-lg">
-                      <pre className="text-green-300 text-sm overflow-x-auto">
-                        {JSON.stringify(apiResponse, null, 2)}
-                      </pre>
+              {apiResponse && (
+                <div className={`official-card shadow-sm border ${
+                  apiResponse === "Document is Invalid" ? "border-red-300 bg-red-50" : "border-green-300 bg-green-50"
+                }`}>
+                  <h3 className={`text-sm font-bold mb-4 uppercase tracking-wider border-b pb-2 ${
+                    apiResponse === "Document is Invalid" ? "text-red-700 border-red-200" : "text-green-700 border-green-200"
+                  }`}>
+                    Blockchain Status
+                  </h3>
+                  
+                  {apiResponse === "Document is Invalid" ? (
+                    <div className="flex items-center text-red-600">
+                      <FaExclamationCircle className="mr-2 text-xl" />
+                      <span className="font-semibold">Match Not Found. Document is invalid or forged.</span>
                     </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+                  ) : (
+                    <div>
+                      <div className="flex items-center text-green-700 mb-3">
+                        <FaCheckCircle className="mr-2 text-xl" />
+                        <span className="font-semibold">Cryptographic Match Found</span>
+                      </div>
+                      <div className="bg-white p-3 rounded border border-green-100 shadow-inner">
+                        <pre className="text-gray-700 text-xs overflow-x-auto whitespace-pre-wrap font-mono">
+                          {JSON.stringify(apiResponse, null, 2)}
+                        </pre>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
