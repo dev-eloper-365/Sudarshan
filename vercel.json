@@ -1,0 +1,14 @@
+{
+  "buildCommand": "cd sudarshan-webserver && npm install && npm run build",
+  "outputDirectory": "sudarshan-webserver/build",
+  "rewrites": [
+    {
+      "source": "/ocr-api/:path*",
+      "destination": "https://sudarshan-ocr-apiserver-g3c5.onrender.com/:path*"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://sudarshan-blockchain-6p28.onrender.com/api/:path*"
+    }
+  ]
+}
